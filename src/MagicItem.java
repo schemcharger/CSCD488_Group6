@@ -1,7 +1,9 @@
 import java.awt.*;
+import java.util.Date;
 
-public class MagicItem {
+public class MagicItem implements Comparable<MagicItem>{
 
+    private Date created;
     private String name;
     private ItemType type;
     private String description;
@@ -18,6 +20,7 @@ public class MagicItem {
         if(name==null||type==null||!isItemType){
             throw new IllegalArgumentException("Null Fields");
         }
+        this.created = new Date();
         this.name = name;
         this.type = type;
         this.description = description;
@@ -87,4 +90,17 @@ public class MagicItem {
     public void setSize(int size) {
         this.size = size;
     }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    @Override
+    public int compareTo(MagicItem o) {
+        if(o==null){
+            throw new IllegalArgumentException("Null Magic Item");
+        }
+        return created.compareTo(o.getCreated());
+    }
+
 }
