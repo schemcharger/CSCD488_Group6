@@ -8,14 +8,16 @@ public class MagicItem {
     private Color[][] art;
     private int size;
 
-    public MagicItem(String name, ItemType type) {
-        this.name = name;
-        this.type = type;
-        this.size = 8;
-        this.art = new Color[this.size][this.size];
-    }
-
     public MagicItem(String name, ItemType type, String description) {
+        boolean isItemType = false;
+        for (ItemType itemType: ItemType.values()){
+            if(itemType.equals(type)){
+                isItemType = true;
+            }
+        }
+        if(name==null||type==null||!isItemType){
+            throw new IllegalArgumentException("Null Fields");
+        }
         this.name = name;
         this.type = type;
         this.description = description;
@@ -28,6 +30,9 @@ public class MagicItem {
     }
 
     public void setName(String name) {
+        if(name==null){
+            throw new IllegalArgumentException("Name is null");
+        }
         this.name = name;
     }
 
@@ -36,6 +41,15 @@ public class MagicItem {
     }
 
     public void setType(ItemType type) {
+        boolean isItemType = false;
+        for (ItemType itemType: ItemType.values()){
+            if(itemType.equals(type)){
+                isItemType = true;
+            }
+        }
+        if(!isItemType){
+            throw new IllegalArgumentException("Invalid Item Type");
+        }
         this.type = type;
     }
 
@@ -52,6 +66,17 @@ public class MagicItem {
     }
 
     public void updateArt(int[] color, int x, int y) {
+        if(x<0||y<0||x>=this.size||y>=this.size){
+            throw new IndexOutOfBoundsException("Not in grid");
+        }
+        if(color.length!=3){
+            throw new IllegalArgumentException("Not a valid color");
+        }
+        for(int i=0; i<color.length;i++){
+            if(color[i]<0||color[i]>255){
+                throw new IllegalArgumentException("invalid rgb value");
+            }
+        }
         this.art[x][y] = new Color(color[0], color[1], color[2]);
     }
 
