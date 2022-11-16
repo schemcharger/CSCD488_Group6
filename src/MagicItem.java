@@ -20,6 +20,11 @@ public class MagicItem implements Comparable<MagicItem>{
         this.description = description;
         this.size = 8;
         this.art = new Color[this.size][this.size];
+        for(int i=0; i<this.art.length; i++){
+            for(int j=0; j<this.art[i].length; j++){
+                this.art[i][j] = Color.WHITE;
+            }
+        }
     }
 
     public String getName() {
@@ -27,7 +32,7 @@ public class MagicItem implements Comparable<MagicItem>{
     }
 
     public void setName(String name) {
-        if(name==null){
+        if(name==null||name==""){
             throw new IllegalArgumentException("Name is null");
         }
         this.name = name;
@@ -38,13 +43,7 @@ public class MagicItem implements Comparable<MagicItem>{
     }
 
     public void setType(ItemType type) {
-        boolean isItemType = false;
-        for (ItemType itemType: ItemType.values()){
-            if(itemType.equals(type)){
-                isItemType = true;
-            }
-        }
-        if(!isItemType){
+       if(type==null){
             throw new IllegalArgumentException("Invalid Item Type");
         }
         this.type = type;
@@ -83,6 +82,12 @@ public class MagicItem implements Comparable<MagicItem>{
 
     public void setSize(int size) {
         this.size = size;
+        this.art = new Color[size][size];
+        for(int i=0; i<this.art.length; i++){
+            for(int j=0; j<this.art[i].length; j++){
+                this.art[i][j] = Color.WHITE;
+            }
+        }
     }
 
     public Date getCreated() {
@@ -92,7 +97,10 @@ public class MagicItem implements Comparable<MagicItem>{
     @Override
     public int compareTo(MagicItem o) {
         if(o==null){
-            throw new IllegalArgumentException("Null Magic Item");
+            throw new IllegalArgumentException("No Magic Item");
+        }
+        if(this.equals(o)){
+            return 0;
         }
         return created.compareTo(o.getCreated());
     }
