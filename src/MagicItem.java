@@ -11,13 +11,7 @@ public class MagicItem implements Comparable<MagicItem>{
     private int size;
 
     public MagicItem(String name, ItemType type, String description) {
-        boolean isItemType = false;
-        for (ItemType itemType: ItemType.values()){
-            if(itemType.equals(type)){
-                isItemType = true;
-            }
-        }
-        if(name==null||type==null||!isItemType){
+        if(name==null||name.equals("")||type==null){
             throw new IllegalArgumentException("Null Fields");
         }
         this.created = new Date();
