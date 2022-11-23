@@ -1,8 +1,19 @@
 import java.util.ArrayList;
+import java.io.*;
 
 public class ItemHelper {
-    ArrayList<MagicItem> itemList = new ArrayList<MagicItem>();
-    int sortType = 0; // 0->date created, 1->name, 2->type
+    ArrayList<MagicItem> itemList;
+    int sortType; // 0->date created, 1->name, 2->type
+
+    public ItemHelper() {
+        this.sortType = 0;
+        File file = new File("itemDb");
+        if(file.exists()){
+            this.itemList = readDB(file);
+        }else{
+            this.itemList = new ArrayList<>();
+        }
+    }
 
     public boolean Save(MagicItem item){
         if (item == null) {
@@ -24,6 +35,28 @@ public class ItemHelper {
         for(int i=0; i<temp.size(); i++){
             this.addItem(temp.get(i));
         }
+    }
+
+    public void writeDB(){
+        File backup = new File("itemDb.bak");
+        File file = new File("itemDb");
+        if(file.exists()){
+            if(backup.exists()){
+                backup.delete();
+                file.renameTo(backup);
+            }
+            file.delete();
+        }
+        try{
+            file.createNewFile();
+            PrintStream fout = new PrintStream(file);
+            for(int i=0; i<this.itemList.size(); i++){
+                fout.println(itemList.get(i).toString());
+            }
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
     }
 
     private boolean addItem(MagicItem item) {
@@ -51,6 +84,11 @@ public class ItemHelper {
         }catch(Exception e) {
             return false;
         }
+    }
+
+    private ArrayList<MagicItem> readDB(File file){
+        ArrayList<MagicItem> lin = new ArrayList<>();
+        return lin;
     }
 
 }

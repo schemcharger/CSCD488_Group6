@@ -117,7 +117,7 @@ public class MagicItem implements Comparable<MagicItem>{
             }else{
                 out+="\""+this.description+"\"";
             }
-        out+=", \"size\":" + size +", \"art\":[\n";
+        out+=", \"size\":" + size +", \"art\":[";
 
         for(int i=0; i<this.art.length; i++){
             for(int j=0; j<this.art[i].length; j++){
@@ -125,7 +125,7 @@ public class MagicItem implements Comparable<MagicItem>{
                     out+="{\"x\":" + i +
                             ", \"y\":" + j +
                             ", \"color\":" +
-                            this.art[i][j].getRGB() + "}\n";
+                            this.art[i][j].getRGB() + "}";
                 }
             }
         }
