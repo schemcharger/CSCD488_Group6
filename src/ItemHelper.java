@@ -43,8 +43,8 @@ public class ItemHelper {
         if(file.exists()){
             if(backup.exists()){
                 backup.delete();
-                file.renameTo(backup);
             }
+            file.renameTo(backup);
             file.delete();
         }
         try{
@@ -53,6 +53,7 @@ public class ItemHelper {
             for(int i=0; i<this.itemList.size(); i++){
                 fout.println(itemList.get(i).toString());
             }
+            fout.close();
         }catch(Exception e){
             System.out.println(e);
         }
