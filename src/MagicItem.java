@@ -107,12 +107,29 @@ public class MagicItem implements Comparable<MagicItem>{
 
     @Override
     public String toString() {
-        return "MagicItem{" +
-                "created=" + created +
-                ", name='" + name + '\'' +
-                ", type=" + type +
-                ", description='" + description + '\'' +
-                ", size=" + size +
-                '}';
+        String out = '{' +
+                "\"created\":\"" + created +
+                "\", \"name\":\"" + name +
+                "\", \"type\":\"" + type +
+                "\", \"description\":";
+            if(this.description==null){
+                out+="null";
+            }else{
+                out+="\""+this.description+"\"";
+            }
+        out+=", \"size\":" + size +", \"art\":[\n";
+
+        for(int i=0; i<this.art.length; i++){
+            for(int j=0; j<this.art[i].length; j++){
+                if(!this.art[i][j].equals(Color.WHITE)){
+                    out+="{\"x\":" + i +
+                            ", \"y\":" + j +
+                            ", \"color\":" +
+                            this.art[i][j].getRGB() + "}\n";
+                }
+            }
+        }
+        out += "]}";
+        return out;
     }
 }
