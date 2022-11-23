@@ -105,4 +105,14 @@ public class MagicItem implements Comparable<MagicItem>{
         return created.compareTo(o.getCreated());
     }
 
+    @Override
+    public String toString() {
+        return "MagicItem{" +
+                "created=" + created +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", description='" + description + '\'' +
+                ", size=" + size +
+                '}';
+    }
 }
