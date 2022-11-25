@@ -71,19 +71,12 @@ public class MagicItem implements Comparable<MagicItem>{
         return art;
     }
 
-    public void updateArt(int[] color, int x, int y) {
+    public void updateArt(Color color, int x, int y) {
         if(x<0||y<0||x>=this.size||y>=this.size){
             throw new IndexOutOfBoundsException("Not in grid");
         }
-        if(color.length!=3){
-            throw new IllegalArgumentException("Not a valid color");
-        }
-        for(int i=0; i<color.length;i++){
-            if(color[i]<0||color[i]>255){
-                throw new IllegalArgumentException("invalid rgb value");
-            }
-        }
-        this.art[x][y] = new Color(color[0], color[1], color[2]);
+
+        this.art[x][y] = color;
     }
 
     public int getSize() {
@@ -133,8 +126,8 @@ public class MagicItem implements Comparable<MagicItem>{
             for(int j=0; j<this.art[i].length; j++){
                 if(!this.art[i][j].equals(Color.WHITE)){
                     out+="{\"x\":" + i +
-                            ", \"y\":" + j +
-                            ", \"color\":" +
+                            "; \"y\":" + j +
+                            "; \"color\":" +
                             this.art[i][j].getRGB() + "}";
                 }
             }
