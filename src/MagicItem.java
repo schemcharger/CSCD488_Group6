@@ -27,6 +27,16 @@ public class MagicItem implements Comparable<MagicItem>{
         }
     }
 
+    protected MagicItem(Date created, String name, ItemType type, String description) {
+        if(name==null||name.equals("")||type==null||created==null){
+            throw new IllegalArgumentException("Null Fields");
+        }
+        this.created = created;
+        this.name = name;
+        this.type = type;
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }
