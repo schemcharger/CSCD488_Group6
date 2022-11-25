@@ -1,5 +1,8 @@
+import java.awt.*;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.io.*;
+import java.util.Date;
 
 public class ItemHelper {
     ArrayList<MagicItem> itemList;
@@ -90,6 +93,36 @@ public class ItemHelper {
     private ArrayList<MagicItem> readDB(File file){
         ArrayList<MagicItem> lin = new ArrayList<>();
         return lin;
+    }
+
+    MagicItem parseItem(String in){
+        if(in == null || !in.startsWith("{")){
+            throw new IllegalArgumentException("Null parser input");
+        }
+        String[] str = in.substring(1).split(", ");
+        Date created = new Date(str[0].substring(11, str[0].length()-1));
+        String name = str[1].substring(8, str[1].length()-1);
+        ItemType type = ItemType.valueOf(str[2].substring(8, str[2].length()-1));
+        String description;
+        if(str[3].substring(14).equals("null")){
+            description = null;
+        }else{
+            description = str[3].substring(15, str[3].length()-1);
+        }
+        MagicItem item = new MagicItem(created, name, type, description);
+        item.setSize(Integer.parseInt(str[4].substring(7)));
+        String[] art = str[5].substring(8, str[5].length()-3).split("}\\{");
+        String[] color;
+        int x=0, y=0, rgb = 0;
+        for (String s : art) {
+            color = s.split("; ");
+            x = Integer.parseInt(color[0].substring(4));
+            y = Integer.parseInt(color[1].substring(4));
+            rgb = Integer.parseInt(color[2].substring(8));
+            item.updateArt(new Color(rgb), x, y);
+        }
+
+        return item;
     }
 
 }
