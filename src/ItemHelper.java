@@ -3,6 +3,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.io.*;
 import java.util.Date;
+import java.util.Scanner;
 
 public class ItemHelper {
     ArrayList<MagicItem> itemList;
@@ -12,7 +13,7 @@ public class ItemHelper {
         this.sortType = 0;
         File file = new File("itemDb");
         if(file.exists()){
-            this.itemList = readDB(file);
+            readDB(file);
         }else{
             this.itemList = new ArrayList<>();
         }
@@ -90,12 +91,21 @@ public class ItemHelper {
         }
     }
 
-    private ArrayList<MagicItem> readDB(File file){
-        ArrayList<MagicItem> lin = new ArrayList<>();
-        return lin;
+    private void readDB(File file){
+        this.itemList = new ArrayList<>();
+        try {
+            Scanner fin = new Scanner(file);
+            while(fin.hasNextLine()) {
+                this.addItem(parseItem(fin.nextLine()));
+
+            }
+            fin.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
-    MagicItem parseItem(String in){
+    static MagicItem parseItem(String in){
         if(in == null || !in.startsWith("{")){
             throw new IllegalArgumentException("Null parser input");
         }
@@ -111,15 +121,17 @@ public class ItemHelper {
         }
         MagicItem item = new MagicItem(created, name, type, description);
         item.setSize(Integer.parseInt(str[4].substring(7)));
-        String[] art = str[5].substring(8, str[5].length()-3).split("}\\{");
-        String[] color;
-        int x=0, y=0, rgb = 0;
-        for (String s : art) {
-            color = s.split("; ");
-            x = Integer.parseInt(color[0].substring(4));
-            y = Integer.parseInt(color[1].substring(4));
-            rgb = Integer.parseInt(color[2].substring(8));
-            item.updateArt(new Color(rgb), x, y);
+        if(!str[5].substring(6, str[5].length()-1).equals("[]")){
+            String[] art = str[5].substring(8, str[5].length() - 3).split("}\\{");
+            String[] color;
+            int x = 0, y = 0, rgb = 0;
+            for (String s : art) {
+                color = s.split("; ");
+                x = Integer.parseInt(color[0].substring(4));
+                y = Integer.parseInt(color[1].substring(4));
+                rgb = Integer.parseInt(color[2].substring(8));
+                item.updateArt(new Color(rgb), x, y);
+            }
         }
 
         return item;
