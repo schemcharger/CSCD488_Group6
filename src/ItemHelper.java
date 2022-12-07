@@ -19,6 +19,15 @@ public class ItemHelper {
         }
     }
 
+    public MagicItem load(int i){
+        if(i<0||i>=itemList.size()){
+            throw new IllegalArgumentException("Invalid item");
+        }
+        MagicItem item = itemList.get(i);
+        itemList.remove(i);
+        return item;
+    }
+
     public boolean Save(MagicItem item){
         if (item == null) {
             throw new IllegalArgumentException("Cannot save Null item");
@@ -26,14 +35,14 @@ public class ItemHelper {
         return(this.addItem(item));
     }
 
-    public void setSortType(int type){
+    public void SetSortType(int type){
         if(type<0||type>2){
             throw new IllegalArgumentException("Unknown sort type");
         }
         this.sortType = type;
     }
 
-    public void sort(){
+    public void Sort(){
         ArrayList<MagicItem> temp = this.itemList;
         this.itemList = new ArrayList<>();
         for(int i=0; i<temp.size(); i++){
@@ -101,7 +110,17 @@ public class ItemHelper {
             }
             fin.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            try {
+                File backup = new File("itemDb.bak");
+                Scanner fin = new Scanner(backup);
+                while(fin.hasNextLine()) {
+                    this.addItem(parseItem(fin.nextLine()));
+
+                }
+            } catch (FileNotFoundException f) {
+                e.printStackTrace();
+                f.printStackTrace();
+            }
         }
     }
 
