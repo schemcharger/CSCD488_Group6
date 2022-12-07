@@ -32,7 +32,11 @@ public class ItemHelper {
         if (item == null) {
             throw new IllegalArgumentException("Cannot save Null item");
         }
-        return(this.addItem(item));
+        boolean added = this.addItem(item);
+        if(added){
+            this.writeDB();
+        }
+        return added;
     }
 
     public void SetSortType(int type){
