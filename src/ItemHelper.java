@@ -6,47 +6,48 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class ItemHelper {
-    ArrayList<MagicItem> itemList;
-    int sortType; // 0->date created, 1->name, 2->type
+    ArrayList<MagicItem> itemList; //a sorted list of magic items
+    int sortType; // what parameter to sort on. 0->date created, 1->name, 2->type
 
     public ItemHelper() {
         this.sortType = 0;
         File file = new File("itemDb");
-        if(file.exists()){
+        if(file.exists()){ //if the database exists, read the items from it. else create a blank list.
             readDB(file);
         }else{
             this.itemList = new ArrayList<>();
         }
     }
 
-    public MagicItem load(int i){
-        if(i<0||i>=itemList.size()){
+    public MagicItem load(int i){ //pick a magic item from the sorted list.
+        if(i<0||i>=itemList.size()){ //check if the index is in the list
             throw new IllegalArgumentException("Invalid item");
         }
         MagicItem item = itemList.get(i);
-        itemList.remove(i);
+        itemList.remove(i); //the magic item gets removed from the list to ensure a duplicate is not saved.
         return item;
     }
 
     public boolean Save(MagicItem item){
-        if (item == null) {
+        if (item == null) { //check if the item is valid
             throw new IllegalArgumentException("Cannot save Null item");
         }
-        boolean added = this.addItem(item);
-        if(added){
+        boolean added = this.addItem(item); // add an item to the list.
+        if(added){ // if the item was successfully added, write the list to the database
             this.writeDB();
         }
         return added;
     }
 
     public void SetSortType(int type){
-        if(type<0||type>2){
+        if(type<0||type>2){ //check if the sort type is valid
             throw new IllegalArgumentException("Unknown sort type");
         }
         this.sortType = type;
+        this.Sort(); //Once the sort type is changed, sort the list.
     }
 
-    public void Sort(){
+    public void Sort(){ //Add each MagicItem to a new sorted list
         ArrayList<MagicItem> temp = this.itemList;
         this.itemList = new ArrayList<>();
         for(int i=0; i<temp.size(); i++){
@@ -55,16 +56,16 @@ public class ItemHelper {
     }
 
     public void writeDB(){
-        File backup = new File("itemDb.bak");
-        File file = new File("itemDb");
-        if(file.exists()){
+        File backup = new File("itemDb.bak");//the database backup
+        File file = new File("itemDb"); // the database
+        if(file.exists()){ //if the database file already exists, copy it to the backup file
             if(backup.exists()){
                 backup.delete();
             }
             file.renameTo(backup);
             file.delete();
         }
-        try{
+        try{ // write the itemlist out to the database file
             file.createNewFile();
             PrintStream fout = new PrintStream(file);
             for(int i=0; i<this.itemList.size(); i++){
@@ -77,7 +78,7 @@ public class ItemHelper {
 
     }
 
-    private boolean addItem(MagicItem item) {
+    private boolean addItem(MagicItem item) { // add an item to the itemList based on the sort type
         try{
             for(int i=0; i<this.itemList.size(); i++){
                 if(this.sortType==0){
@@ -104,17 +105,17 @@ public class ItemHelper {
         }
     }
 
-    private void readDB(File file){
+    private void readDB(File file){//Create an itemList from the database
         this.itemList = new ArrayList<>();
-        try {
+        try { //Use a scanner to read the file
             Scanner fin = new Scanner(file);
             while(fin.hasNextLine()) {
                 this.addItem(parseItem(fin.nextLine()));
 
             }
             fin.close();
-        } catch (FileNotFoundException e) {
-            try {
+        } catch (Exception e) {
+            try { //if there is a problem reading the database file, try reading the backup
                 File backup = new File("itemDb.bak");
                 Scanner fin = new Scanner(backup);
                 while(fin.hasNextLine()) {
@@ -128,7 +129,7 @@ public class ItemHelper {
         }
     }
 
-    static MagicItem parseItem(String in){
+    static MagicItem parseItem(String in){ //Parse a string in the format from MagicItem.toString
         if(in == null || !in.startsWith("{")){
             throw new IllegalArgumentException("Null parser input");
         }
