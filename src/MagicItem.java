@@ -1,5 +1,7 @@
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class MagicItem implements Comparable<MagicItem>{
 
@@ -7,6 +9,7 @@ public class MagicItem implements Comparable<MagicItem>{
     private String name; //The item's name.
     private ItemType type; //The item's type from the ItemType enum
     private String description; //The item's description, can be blank.
+    private ArrayList<String> traits;
     private Color[][] art; //The two dimensional array that holds the art for the item. Default color is white.
     private int size; //The size of the art grid.
 
@@ -17,6 +20,7 @@ public class MagicItem implements Comparable<MagicItem>{
         this.created = new Date(); //create date at current moment.
         this.name = name;
         this.type = type;
+        this.traits = new ArrayList<>();
         if(description==null){ //if description is null, set it to blank string
             this.description = "";
         }else{
@@ -79,6 +83,30 @@ public class MagicItem implements Comparable<MagicItem>{
         }
     }
 
+    public ArrayList getTraits(){return this.traits;}
+
+    public void addTrait(String trait){
+        if(trait==null||trait.isEmpty()){
+            throw new IllegalArgumentException("Invalid Trait");
+        }
+        for(int i=0; i< this.traits.size(); i++){
+            if(trait.toLowerCase().compareTo(this.traits.get(i))<0){
+                this.traits.add(i, trait.toLowerCase());
+                return;
+            }else if(trait.toLowerCase().equals(traits.get(i))){
+                return;
+            }
+        }
+        this.traits.add(trait.toLowerCase());
+    }
+
+    public void removeTrait(String trait){
+        if(trait==null||trait.isEmpty()){
+            throw new IllegalArgumentException("Invalid Trait");
+        }
+        this.traits.remove(trait);
+    }
+
     public Color[][] getArt() {
         return art;
     }
@@ -132,7 +160,14 @@ public class MagicItem implements Comparable<MagicItem>{
             }else{
                 out+="\""+this.description+"\"";
             }
-        out+=", \"size\":" + size +", \"art\":[";
+        out+=", \"traits\":[";
+        if(!this.traits.isEmpty()) {
+            for (int i = 0; i < this.traits.size() - 1; i++) {
+                out += "\""+this.traits.get(i)+"\"; ";
+            }
+            out+= "\"" + this.traits.get(this.traits.size()-1) +"\"";
+        }
+        out+="], \"size\":" + size +", \"art\":[";
 
         for(int i=0; i<this.art.length; i++){ //Save the coordinates and color of any non-white pixels
             for(int j=0; j<this.art[i].length; j++){

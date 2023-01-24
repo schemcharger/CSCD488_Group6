@@ -7,10 +7,12 @@ import java.util.Scanner;
 
 public class ItemHelper {
     ArrayList<MagicItem> itemList; //a sorted list of magic items
+    ArrayList<String> traitList;
     int sortType; // what parameter to sort on. 0->date created, 1->name, 2->type
 
     public ItemHelper() {
         this.sortType = 0;
+        this.traitList = new ArrayList<>();
         File file = new File("itemDb");
         if(file.exists()){ //if the database exists, read the items from it. else create a blank list.
             readDB(file);
@@ -105,6 +107,21 @@ public class ItemHelper {
         }
     }
 
+    public void addTrait(String trait){
+        if(trait==null||trait.isEmpty()){
+            throw new IllegalArgumentException("Invalid Trait");
+        }
+        for(int i=0; i< this.traitList.size(); i++){
+            if(trait.toLowerCase().compareTo(this.traitList.get(i))<0){
+                this.traitList.add(i, trait.toLowerCase());
+                return;
+            }else if(trait.toLowerCase().equals(traitList.get(i))){
+                return;
+            }
+        }
+        this.traitList.add(trait.toLowerCase());
+    }
+
     private void readDB(File file){//Create an itemList from the database
         this.itemList = new ArrayList<>();
         try { //Use a scanner to read the file
@@ -119,8 +136,12 @@ public class ItemHelper {
                 File backup = new File("itemDb.bak");
                 Scanner fin = new Scanner(backup);
                 while(fin.hasNextLine()) {
-                    this.addItem(parseItem(fin.nextLine()));
-
+                    MagicItem item = parseItem(fin.nextLine());
+                    this.addItem(item);
+                    ArrayList<String> traits = item.getTraits();
+                    for(int i=0; i<traits.size(); i++){
+                        this.addTrait(traits.get(i));
+                    }
                 }
             } catch (FileNotFoundException f) {
                 e.printStackTrace();
@@ -144,9 +165,13 @@ public class ItemHelper {
             description = str[3].substring(15, str[3].length()-1);
         }
         MagicItem item = new MagicItem(created, name, type, description);
-        item.setSize(Integer.parseInt(str[4].substring(7)));
-        if(!str[5].substring(6, str[5].length()-1).equals("[]")){
-            String[] art = str[5].substring(8, str[5].length() - 3).split("}\\{");
+        String[] traits = str[4].substring(1, str[4].length()).split("; ");
+        for(int i=0; i< traits.length; i++){
+            item.addTrait(traits[i]);
+        }
+        item.setSize(Integer.parseInt(str[5].substring(7)));
+        if(!str[6].substring(6, str[6].length()-1).equals("[]")){
+            String[] art = str[6].substring(8, str[6].length() - 3).split("}\\{");
             String[] color;
             int x = 0, y = 0, rgb = 0;
             for (String s : art) {
