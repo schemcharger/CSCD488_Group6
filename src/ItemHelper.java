@@ -1,5 +1,6 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.text.DateFormat;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.io.*;
 import java.util.Date;
@@ -75,13 +76,45 @@ public class ItemHelper {
             }
             fout.close();
         }catch(Exception e){
+            if(backup.exists()){
+                backup.renameTo(file);
+            }
             System.out.println(e);
         }
 
     }
 
-    public void writeArt(int i){
-
+    public boolean writeArt(int index){
+        MagicItem cur = this.itemList.get(index);
+        Color[][] art = cur.getArt();
+        int size = 512/cur.getSize();
+        BufferedImage artOut = new BufferedImage(512, 512, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = artOut.createGraphics();
+        for(int i=0;i<art.length; i++){
+            for(int j=0; j< art[i].length; j++){
+                graphics.setColor(art[i][j]);
+                graphics.fillRect((i*size)+1, (j*size)+1, size, size);
+            }
+        }
+        graphics.dispose();
+        File file = new File("export.png");
+        File backup = new File("export.png.bak");
+        if(file.exists()){
+            if(backup.exists()){
+                backup.delete();
+            }
+            file.renameTo(backup);
+            file.delete();
+        }
+        try {
+            ImageIO.write(artOut, "PNG", file);
+        }catch (IOException e){
+            if(backup.exists()){
+                backup.renameTo(file);
+            }
+            return false;
+        }
+        return true;
     }
 
     private boolean addItem(MagicItem item) { // add an item to the itemList based on the sort type
