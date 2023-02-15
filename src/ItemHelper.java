@@ -216,7 +216,7 @@ public class ItemHelper {
                 x = Integer.parseInt(color[0].substring(4));
                 y = Integer.parseInt(color[1].substring(4));
                 rgb = Integer.parseInt(color[2].substring(8));
-                item.updateArt(new Color(rgb), x, y);
+                item.updateArt(new Color(rgb, true), x, y);
             }
         }
 
