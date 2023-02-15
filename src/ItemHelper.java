@@ -80,6 +80,10 @@ public class ItemHelper {
 
     }
 
+    public void writeArt(int i){
+
+    }
+
     private boolean addItem(MagicItem item) { // add an item to the itemList based on the sort type
         try{
             for(int i=0; i<this.itemList.size(); i++){
