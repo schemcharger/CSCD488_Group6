@@ -83,7 +83,7 @@ public class MagicItem implements Comparable<MagicItem>{
         }
     }
 
-    public ArrayList getTraits(){return this.traits;}
+    public ArrayList<String> getTraits(){return this.traits;}
 
     public void addTrait(String trait){
         if(trait==null||trait.isEmpty()){
