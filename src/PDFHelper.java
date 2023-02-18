@@ -27,6 +27,9 @@ public class PDFHelper {
 	private MagicItem item;
 	
 	public PDFHelper(MagicItem item) throws IOException {
+		if(item == null) {
+			throw new IllegalArgumentException("Null MagicItem detected in PDFHelper constructor");
+		}
 		this.item = item;
 		this.doc = new PDDocument();
 		this.page = new PDPage();
@@ -44,7 +47,6 @@ public class PDFHelper {
 	}
 	
 	private void renderArt() throws IOException {
-
 		PDImageXObject pixelArt = PDImageXObject.createFromFile("src/assets/pikachu.png", this.doc);
 		stream.drawImage(bgImage, 0, 0, PDRectangle.LETTER.getWidth(), PDRectangle.LETTER.getHeight());
 		stream.drawImage(pixelArt, width - 175, height - 175, 128, 128);
@@ -103,18 +105,22 @@ public class PDFHelper {
 		this.stream.beginText();
 		this.stream.newLineAtOffset(50, height - 600);
 		this.stream.setFont(headerFont, 20);
-		this.stream.showText("Properties");
+		this.stream.showText("Traits");
 		this.stream.endText();
 		
 		this.stream.beginText();
 		this.stream.newLineAtOffset(50, height - 630);
 		this.stream.setLeading(30);
 		this.stream.setFont(propertiesFont, 14);
-		this.stream.showText("\u2022Focused");
-		this.stream.newLine();
-		this.stream.showText("\u2022Hardy");
-		this.stream.newLine();
-		this.stream.showText("\u2022Unwavering");
+		for(String trait : item.getTraits()) {
+			this.stream.showText(String.format("\u2022 %s", trait));
+			this.stream.newLine();
+		}
+//		this.stream.showText("\u2022Focused");
+//		this.stream.newLine();
+//		this.stream.showText("\u2022Hardy");
+//		this.stream.newLine();
+//		this.stream.showText("\u2022Unwavering");
 		this.stream.endText();
 	}
 	
