@@ -1,5 +1,5 @@
 public class Tester {
-    public static void main(){
-        //do not  push changes here to github
+    public static void main(String[] args){
+    	// Don't add changes here to repo
     }
 }

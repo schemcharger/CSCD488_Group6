@@ -1,3 +1,4 @@
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -51,6 +52,7 @@ public class ItemHelper {
     }
 
     public void Sort(){ //Add each MagicItem to a new sorted list
+
         ArrayList<MagicItem> temp = this.itemList;
         this.itemList = new ArrayList<>();
         for(int i=0; i<temp.size(); i++){
@@ -118,6 +120,7 @@ public class ItemHelper {
     }
 
     private boolean addItem(MagicItem item) { // add an item to the itemList based on the sort type
+
         try{
             for(int i=0; i<this.itemList.size(); i++){
                 if(this.sortType==0){
@@ -143,6 +146,7 @@ public class ItemHelper {
             return false;
         }
     }
+
 
     public void addTrait(String trait){
         if(trait==null||trait.isEmpty()){
@@ -224,4 +228,5 @@ public class ItemHelper {
     }
 
 }
+
 

@@ -1,7 +1,7 @@
-import java.awt.*;
+
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 public class MagicItem implements Comparable<MagicItem>{
 
@@ -9,11 +9,12 @@ public class MagicItem implements Comparable<MagicItem>{
     private String name; //The item's name.
     private ItemType type; //The item's type from the ItemType enum
     private String description; //The item's description, can be blank.
+    private String lore;
     private ArrayList<String> traits;
     private Color[][] art; //The two dimensional array that holds the art for the item. Default color is white.
     private int size; //The size of the art grid.
 
-    public MagicItem(String name, ItemType type, String description) { //used to create a new MagicItem.
+    public MagicItem(String name, ItemType type, String description, String lore) { //used to create a new MagicItem.
         if(name==null||name.equals("")||type==null){ //check for valid name and type.
             throw new IllegalArgumentException("Null Fields");
         }
@@ -21,36 +22,24 @@ public class MagicItem implements Comparable<MagicItem>{
         this.name = name;
         this.type = type;
         this.traits = new ArrayList<>();
-        if(description==null){ //if description is null, set it to blank string
-            this.description = "";
-        }else{
-            this.description = description;
-        }
-        this.size = 8; //default art is 8x8
-        this.art = new Color[this.size][this.size];
-        for(int i=0; i<this.art.length; i++){ //set initial art to white.
-            for(int j=0; j<this.art[i].length; j++){
-                this.art[i][j] = new Color(255, 255, 255, 0);
-            }
-        }
+        this.setDescription(description);
+        this.setLore(lore);
+        this.setSize(8);
     }
 
-    protected MagicItem(Date created, String name, ItemType type, String description) { //used when creating item from database entry
+    protected MagicItem(Date created, String name, ItemType type, String description, String lore) { //used when creating item from database entry
         if(name==null||name.equals("")||type==null||created==null){ //check for valid name, type, and date
             throw new IllegalArgumentException("Null Fields");
         }
         this.created = created;
         this.name = name;
         this.type = type;
-        if(description==null){ //if description is null, set it to blank
-            this.description = "";
-        }else{
-            this.description = description;
-        }
+        this.setDescription(description);
+        this.setLore(lore);
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -61,7 +50,7 @@ public class MagicItem implements Comparable<MagicItem>{
     }
 
     public ItemType getType() {
-        return type;
+        return this.type;
     }
 
     public void setType(ItemType type) {
@@ -72,7 +61,11 @@ public class MagicItem implements Comparable<MagicItem>{
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
+    }
+    
+    public String getLore() {
+    	return this.lore;
     }
 
     public void setDescription(String description) {
@@ -81,6 +74,15 @@ public class MagicItem implements Comparable<MagicItem>{
         }else{
             this.description = description;
         }
+    }
+    
+    public void setLore(String lore) {
+    	if(lore == null) {
+    		this.lore = "";
+    	}
+    	else {
+    		this.lore = lore;
+    	}
     }
 
     public ArrayList<String> getTraits(){return this.traits;}
@@ -108,7 +110,7 @@ public class MagicItem implements Comparable<MagicItem>{
     }
 
     public Color[][] getArt() {
-        return art;
+        return this.art;
     }
 
     public void updateArt(Color color, int x, int y) { //sets the block of art at (x,y) to the given color
@@ -120,7 +122,7 @@ public class MagicItem implements Comparable<MagicItem>{
     }
 
     public int getSize() {
-        return size;
+        return this.size;
     }
 
     public void setSize(int size) { //sets the art to a new size with white squares
@@ -134,7 +136,7 @@ public class MagicItem implements Comparable<MagicItem>{
     }
 
     public Date getCreated() {
-        return created;
+        return this.created;
     }
 
     @Override
@@ -145,7 +147,7 @@ public class MagicItem implements Comparable<MagicItem>{
         if(this.equals(o)){
             return 0;
         }
-        return created.compareTo(o.getCreated());
+        return this.created.compareTo(o.getCreated());
     }
 
     @Override
@@ -183,3 +185,4 @@ public class MagicItem implements Comparable<MagicItem>{
         return out;
     }
 }
+
