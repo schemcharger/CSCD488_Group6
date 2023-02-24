@@ -1,5 +1,11 @@
+package helpers;
+
 
 import javax.imageio.ImageIO;
+
+import magicitem.ItemType;
+import magicitem.MagicItem;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
