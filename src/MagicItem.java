@@ -1,3 +1,4 @@
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
@@ -184,3 +185,4 @@ public class MagicItem implements Comparable<MagicItem>{
         return out;
     }
 }
+
