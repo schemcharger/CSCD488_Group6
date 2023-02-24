@@ -9,7 +9,6 @@ public class MagicItem implements Comparable<MagicItem>{
     private String name; //The item's name.
     private ItemType type; //The item's type from the ItemType enum
     private String description; //The item's description, can be blank.
-    private String lore;
     private ArrayList<String> traits;
     private Color[][] art; //The two dimensional array that holds the art for the item. Default color is white.
     private int size; //The size of the art grid.
@@ -23,11 +22,10 @@ public class MagicItem implements Comparable<MagicItem>{
         this.type = type;
         this.traits = new ArrayList<>();
         this.setDescription(description);
-        this.setLore(lore);
         this.setSize(8);
     }
 
-    protected MagicItem(Date created, String name, ItemType type, String description, String lore) { //used when creating item from database entry
+    protected MagicItem(Date created, String name, ItemType type, String description) { //used when creating item from database entry
         if(name==null||name.equals("")||type==null||created==null){ //check for valid name, type, and date
             throw new IllegalArgumentException("Null Fields");
         }
@@ -35,7 +33,6 @@ public class MagicItem implements Comparable<MagicItem>{
         this.name = name;
         this.type = type;
         this.setDescription(description);
-        this.setLore(lore);
     }
 
     public String getName() {
@@ -63,10 +60,6 @@ public class MagicItem implements Comparable<MagicItem>{
     public String getDescription() {
         return this.description;
     }
-    
-    public String getLore() {
-    	return this.lore;
-    }
 
     public void setDescription(String description) {
         if(description==null){ //if description is null, set it to blank
@@ -74,15 +67,6 @@ public class MagicItem implements Comparable<MagicItem>{
         }else{
             this.description = description;
         }
-    }
-    
-    public void setLore(String lore) {
-    	if(lore == null) {
-    		this.lore = "";
-    	}
-    	else {
-    		this.lore = lore;
-    	}
     }
 
     public ArrayList<String> getTraits(){return this.traits;}
