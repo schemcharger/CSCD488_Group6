@@ -1,3 +1,4 @@
+package helpers;
 
 
 import java.io.IOException;
@@ -12,6 +13,8 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+
+import magicitem.MagicItem;
 
 public class PDFHelper {
 	
