@@ -8,7 +8,7 @@ import helpers.PDFHelper;
 import magicitem.ItemType;
 import magicitem.MagicItem;
 
-class PDFHelperTests {
+class PDFHelperTest {
 
 	@Test
 	void PDFHelper_renderPDF_ExportsPDF() {
