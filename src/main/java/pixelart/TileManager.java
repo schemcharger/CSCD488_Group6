@@ -2,7 +2,7 @@ package pixelart;
 
 import magicitem.MagicItem;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,15 +14,18 @@ import javax.imageio.ImageIO;
 public class TileManager {
     GamePanel gp;
     tile[] tile;
-    int mapTileNum[][];
+    Color[][] mapTileNum;
     MagicItem item;
 
     public TileManager(GamePanel gp, MagicItem item){
         this.gp = gp;
         tile = new tile[5];
         this.item = item;
-        mapTileNum = new int[gp.MasterScreenCol][gp.MasterScreenRow];
-        getTileImage();
+        mapTileNum = item.getArt().clone();
+        this.gp.MasterScreenCol = item.getSize();
+        this.gp.MasterScreenRow = item.getSize();
+        this.gp.screenHeight = this.gp.ActualTileSize * this.gp.MasterScreenRow;
+        this.gp.screenWidth = this.gp.ActualTileSize * this.gp.MasterScreenCol;
         loadMap();
     }
 
