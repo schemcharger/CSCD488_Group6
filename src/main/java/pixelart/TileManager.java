@@ -4,6 +4,8 @@ import magicitem.MagicItem;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -87,6 +89,10 @@ public class TileManager {
                y += gp.ActualTileSize;
             }
         }
+    }
+
+    public void SaveMap() throws IOException {
+        this.item.setArt(this.mapTileNum.clone());
     }
 
 

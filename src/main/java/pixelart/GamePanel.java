@@ -80,7 +80,7 @@ public class GamePanel extends JPanel implements Runnable{
             //Save
             if(keyH.savePressed==true){
                 try {
-                    this.SaveMap();
+                    this.tileM.SaveMap();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -146,24 +146,5 @@ public class GamePanel extends JPanel implements Runnable{
         tileM.draw(g2);
         pixelCursor.draw(g2);
         g2.dispose();
-    }
-
-    public void SaveMap() throws IOException {
-
-
-        int MapArray[][] = this.tileM.getMap();
-        StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < MapArray.length; i++){
-            for(int j = 0; j < MapArray.length; j++){
-                builder.append(MapArray[j][i]+"");
-                if(j < MapArray.length - 1)
-                    builder.append(" ");
-            }
-            builder.append("\n");
-        }
-        BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/MapTestSave.txt"));
-        writer.write(builder.toString());
-        writer.flush();
-        writer.close();
     }
 }

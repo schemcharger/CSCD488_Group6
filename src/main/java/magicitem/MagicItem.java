@@ -106,6 +106,10 @@ public class MagicItem implements Comparable<MagicItem>{
         this.art[x][y] = color;
     }
 
+    public void setArt(Color[][] art){
+        this.art = art;
+    }
+
     public int getSize() {
         return this.size;
     }
