@@ -1,6 +1,6 @@
 package pixelart;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -21,7 +21,7 @@ public class pixelCursor extends entity{
         x = 0;
         y = 0;
         speed = 32;
-        colorChoice = 1;
+        colorChoice = new Color(0,0,0,0);
     }
     public void getCursorImage(){
 
@@ -60,11 +60,11 @@ public class pixelCursor extends entity{
     public int getCursorY(){
         return y;
     }
-    public int getColorChoice(){
+    public Color getColorChoice(){
         return colorChoice;
     }
 
-    public void setColorChoice(int x){
+    public void setColorChoice(Color x){
         colorChoice = x;
     }
 

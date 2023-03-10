@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.JPanel;
 
@@ -87,25 +88,10 @@ public class GamePanel extends JPanel implements Runnable{
             }
             keyH.setSavePressed();
             //Color Swap
-            int currentColor=this.cursor.getColorChoice();
             if(keyH.changeColorPlus==true){
-               if(currentColor < this.tileM.getNumberOfColors()){
-                   this.cursor.setColorChoice(currentColor+1);
-               }
-               else{
-                   this.cursor.setColorChoice(this.tileM.getNumberOfColors());
-               }
+
             }
             keyH.setChangeColorPlus();
-            if(keyH.changeColorMinus==true){
-                if(  currentColor > 1){
-                    this.cursor.setColorChoice(currentColor-1);
-                }
-                else{
-                    this.cursor.setColorChoice(1);
-                }
-            }
-            keyH.setChangeColorMinus();
             //Place
             if(keyH.PlaceTile==true){
                 tileM.setMapTileNum((this.cursor.getCursorX()/ActualTileSize),(this.cursor.getCursorY()/ActualTileSize),this.cursor.getColorChoice(),this.tileM.getMap());
@@ -113,7 +99,7 @@ public class GamePanel extends JPanel implements Runnable{
             keyH.setPlaceTile();
             //Delete
             if(keyH.deletePressed==true){
-                tileM.setMapTileNum((this.cursor.getCursorX()/ActualTileSize),(this.cursor.getCursorY()/ActualTileSize),0,this.tileM.getMap());
+                tileM.setMapTileNum((this.cursor.getCursorX()/ActualTileSize),(this.cursor.getCursorY()/ActualTileSize),new Color(0,0,0,0),this.tileM.getMap());
             }
             keyH.setDeletePressed();
 
