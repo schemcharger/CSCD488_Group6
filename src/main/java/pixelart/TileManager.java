@@ -20,64 +20,25 @@ public class TileManager {
     public TileManager(GamePanel gp, MagicItem item){
         this.gp = gp;
         tile = new tile[5];
-        this.item = item;
-        mapTileNum = item.getArt().clone();
-        this.gp.MasterScreenCol = item.getSize();
-        this.gp.MasterScreenRow = item.getSize();
-        this.gp.screenHeight = this.gp.ActualTileSize * this.gp.MasterScreenRow;
-        this.gp.screenWidth = this.gp.ActualTileSize * this.gp.MasterScreenCol;
-        loadMap();
+        loadMap(item);
     }
 
     public void getTileImage(){
         try{
             tile[0] = new tile();
             tile[0].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("tiles/DefaultClear.png"));
-
-            tile[1] = new tile();
-            tile[1].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("tiles/DiamondDark.png"));
-
-            tile[2] = new tile();
-            tile[2].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("tiles/SwordHandleBrown.png"));
-
-            tile[3] = new tile();
-            tile[3].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("tiles/SwordHandleDarkBrown.png"));
-
-            tile[4] = new tile();
-            tile[4].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("tiles/DiamondBlue.png"));
-
         }catch(IOException e){
             e.printStackTrace();
         }
     }
 
-    public void loadMap(){
-      try{
-          InputStream is = getClass().getClassLoader().getResourceAsStream("MapTestSave.txt");
-          BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-          int col = 0;
-          int row = 0;
-
-          while(col < gp.MasterScreenCol && row < gp.MasterScreenRow){
-              String line = br.readLine();
-              while(col < gp.MasterScreenCol){
-                  String numbers[] = line.split(" ");
-
-                  int num = Integer.parseInt(numbers[col]);
-
-                  mapTileNum[col][row]=num;
-                  col++;
-              }
-              if(col == gp.MasterScreenCol){
-                 col = 0;
-                 row++;
-              }
-          }
-          br.close();
-      }catch (Exception e){
-
-      }
+    public void loadMap(MagicItem item){
+        this.item = item;
+        mapTileNum = item.getArt().clone();
+        this.gp.MasterScreenCol = item.getSize();
+        this.gp.MasterScreenRow = item.getSize();
+        this.gp.screenHeight = this.gp.ActualTileSize * this.gp.MasterScreenRow;
+        this.gp.screenWidth = this.gp.ActualTileSize * this.gp.MasterScreenCol;
     }
 
     public void setMapTileNum(int x,int y,Color color, Color[][] mapTileNum) {
