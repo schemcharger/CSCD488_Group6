@@ -11,6 +11,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Scanner;
 
 import javax.swing.JPanel;
 
@@ -30,10 +31,10 @@ public class GamePanel extends JPanel implements Runnable{
     final int MasterTileSize = 16; // this is the main tile size of 16 pixels
     final int TileScale = 2; //this is the scaling multiplier for the tile size for easier use
     public final int ActualTileSize = MasterTileSize * TileScale;
-    public int MasterScreenCol = 32;
-    public int MasterScreenRow = 32;
-    public int screenWidth = ActualTileSize * MasterScreenCol;
-    public int screenHeight = ActualTileSize * MasterScreenRow;
+    public int MasterScreenCol;
+    public int MasterScreenRow;
+    public int screenWidth;
+    public int screenHeight;
     //FPS
     int FPS = 10;
 
@@ -45,14 +46,14 @@ public class GamePanel extends JPanel implements Runnable{
 
 
     public GamePanel(MagicItem item) {
+        this.tileM= new TileManager(this, item);
+        this.keyH = new KeyHandler();
+        this.cursor = new pixelCursor(this, keyH);
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
         this.setBackground(Color.WHITE);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
-        this.tileM= new TileManager(this, item);
-        this.keyH = new KeyHandler();
-        this.cursor = new pixelCursor(this, keyH);
     }
 
     public void startGameThread(){
@@ -89,7 +90,13 @@ public class GamePanel extends JPanel implements Runnable{
             keyH.setSavePressed();
             //Color Swap
             if(keyH.changeColorPlus==true){
-
+                Scanner kb = new Scanner(System.in);
+                int in[] = new int[3];
+                for(int i =0; i<in.length; i++){
+                    in[i] = kb.nextInt();
+                }
+                kb.close();
+                this.cursor.setColorChoice(new Color(in[0], in[1], in[2]));
             }
             keyH.setChangeColorPlus();
             //Place
