@@ -91,7 +91,7 @@ public class TileManager {
         }
     }
 
-    public void SaveMap() throws IOException {
+    public void SaveMap(){
         this.item.setArt(this.mapTileNum.clone());
     }
 

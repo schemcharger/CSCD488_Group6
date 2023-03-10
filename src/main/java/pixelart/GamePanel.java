@@ -81,22 +81,12 @@ public class GamePanel extends JPanel implements Runnable{
             keyH.setUpPressed();
             //Save
             if(keyH.savePressed==true){
-                try {
-                    this.tileM.SaveMap();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                this.tileM.SaveMap();
             }
             keyH.setSavePressed();
             //Color Swap
             if(keyH.changeColorPlus==true){
-                Scanner kb = new Scanner(System.in);
-                int in[] = new int[3];
-                for(int i =0; i<in.length; i++){
-                    in[i] = kb.nextInt();
-                }
-                kb.close();
-                this.cursor.setColorChoice(new Color(in[0], in[1], in[2]));
+                this.cursor.setColorChoice(new Color(237, 50, 104));
             }
             keyH.setChangeColorPlus();
             //Place
@@ -107,6 +97,7 @@ public class GamePanel extends JPanel implements Runnable{
             //Delete
             if(keyH.deletePressed==true){
                 tileM.setMapTileNum((this.cursor.getCursorX()/ActualTileSize),(this.cursor.getCursorY()/ActualTileSize),new Color(0,0,0,0),this.tileM.getMap());
+                //this.tileM.SaveMap();
             }
             keyH.setDeletePressed();
 
