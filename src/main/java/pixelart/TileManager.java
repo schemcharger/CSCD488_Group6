@@ -80,12 +80,12 @@ public class TileManager {
       }
     }
 
-    public void setMapTileNum(int x,int y,int color, int[][] mapTileNum) {
+    public void setMapTileNum(int x,int y,Color color, Color[][] mapTileNum) {
         mapTileNum[x][y]= color;
         this.mapTileNum = mapTileNum;
     }
 
-    public int[][] getMap(){
+    public Color[][] getMap(){
         return this.mapTileNum;
     }
     public int getNumberOfColors() {return this.tile.length;}
@@ -98,7 +98,7 @@ public class TileManager {
         int y = 0;
 
         while(col < gp.MasterScreenCol && row < gp.MasterScreenRow) {
-            int tileNum = mapTileNum[col][row];
+            Color tileNum = mapTileNum[col][row];
             g2.drawImage(tile[tileNum].image, x, y, gp.ActualTileSize, gp.ActualTileSize, null);
             col++;
             x += gp.ActualTileSize;
