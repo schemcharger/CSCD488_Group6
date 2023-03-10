@@ -11,7 +11,7 @@ public class GameWindow {
 
         JFrame theWindow = new JFrame();
         theWindow.setTitle("Pixel Editor");
-        GamePanel thePanel = new GamePanel();
+        GamePanel thePanel = new GamePanel(item);
         theWindow.setResizable(false);
         theWindow.setLocationRelativeTo(null);
         theWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

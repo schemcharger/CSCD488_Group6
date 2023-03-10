@@ -1,5 +1,7 @@
 package pixelart;
 
+import magicitem.MagicItem;
+
 import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,16 +12,15 @@ import javax.imageio.ImageIO;
 
 
 public class TileManager {
-
     GamePanel gp;
     tile[] tile;
     int mapTileNum[][];
+    MagicItem item;
 
-    int numberOfColors = 4;
-
-    public TileManager(GamePanel gp){
+    public TileManager(GamePanel gp, MagicItem item){
         this.gp = gp;
         tile = new tile[5];
+        this.item = item;
         mapTileNum = new int[gp.MasterScreenCol][gp.MasterScreenRow];
         getTileImage();
         loadMap();
@@ -84,7 +85,7 @@ public class TileManager {
     public int[][] getMap(){
         return this.mapTileNum;
     }
-    public int getNumberOfColors() {return this.numberOfColors;}
+    public int getNumberOfColors() {return this.tile.length;}
     public void draw(Graphics2D g2){
         g2.drawImage(tile[0].image,0,0,gp.ActualTileSize,gp.ActualTileSize,null);
 

@@ -1,5 +1,7 @@
 package pixelart;
 
+import magicitem.MagicItem;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -27,26 +29,29 @@ public class GamePanel extends JPanel implements Runnable{
     final int MasterTileSize = 16; // this is the main tile size of 16 pixels
     final int TileScale = 2; //this is the scaling multiplier for the tile size for easier use
     public final int ActualTileSize = MasterTileSize * TileScale;
-    public final int MasterScreenCol = 32;
-    public final int MasterScreenRow = 32;
-    public final int screenWidth = ActualTileSize * MasterScreenCol;
-    public final int screenHeight = ActualTileSize * MasterScreenRow;
+    public int MasterScreenCol = 32;
+    public int MasterScreenRow = 32;
+    public int screenWidth = ActualTileSize * MasterScreenCol;
+    public int screenHeight = ActualTileSize * MasterScreenRow;
     //FPS
     int FPS = 10;
 
-    TileManager tileM = new TileManager(this);
-    KeyHandler keyH = new KeyHandler();
+    TileManager tileM;
+    KeyHandler keyH;
     Thread gameThread;
-    pixelCursor cursor = new pixelCursor(this, keyH);
+    pixelCursor cursor;
 
 
 
-    public GamePanel() {
+    public GamePanel(MagicItem item) {
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
         this.setBackground(Color.WHITE);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        this.tileM= new TileManager(this, item);
+        this.keyH = new KeyHandler();
+        this.cursor = new pixelCursor(this, keyH);
     }
 
     public void startGameThread(){
