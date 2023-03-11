@@ -97,6 +97,10 @@ public class ItemHelper {
     }
 
     public boolean writeArt(int index){
+		String home = System.getProperty("user.home");
+		String dir = String.format("%s%sDocuments%sMagic Item Creator", home, File.separator, File.separator);
+		final File artFile = new File(dir, "Item Art");
+		artFile.mkdirs();
         MagicItem cur = this.itemList.get(index);
         Color[][] art = cur.getArt();
         int size = 512/cur.getSize();
@@ -109,8 +113,8 @@ public class ItemHelper {
             }
         }
         graphics.dispose();
-        File file = new File("export.png");
-        File backup = new File("export.png.bak");
+        File file = new File(artFile, this.itemList.get(index).getName() + ".png");
+        File backup = new File(artFile, this.itemList.get(index).getName() + ".png.bak");
         if(file.exists()){
             if(backup.exists()){
                 backup.delete();

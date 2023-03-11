@@ -11,10 +11,30 @@ import magicitem.MagicItem;
 class PDFHelperTest {
 
 	@Test
-	void PDFHelper_renderPDF_ExportsPDF() {
+	public void PDFHelper_renderPDF_ExportsPDF() {
 		MagicItem item = new MagicItem("Test Name", ItemType.WEAPON, "Test description");
-		item.addTrait("Hardy");
-		item.addTrait("Focused");
+		int i = 0;
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
+		item.addTrait("" + i++);
 		assertTrue(PDFHelper.renderPDF(item));
 	}
 

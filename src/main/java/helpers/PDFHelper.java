@@ -38,24 +38,29 @@ public class PDFHelper {
 		page = new PDPage();
 		try {
 			stream = new PDPageContentStream(doc, page);
-			bgImage = PDImageXObject.createFromFile("src/main/assets/parchment.jpg", doc);
+			bgImage = PDImageXObject.createFromFile("src/main/resources/parchment.jpg", doc);
+			stream.drawImage(bgImage, 0, 0, PDRectangle.LETTER.getWidth(), PDRectangle.LETTER.getHeight());
 		} catch (IOException e) {
 			System.out.println("Content stream error in renderPDF method of PDFHelper");
 			e.printStackTrace();
 		}
-		renderArt();
+		if(new File(System.getProperty("user.home") + File.separator + "Documents" + File.separator + 
+				"Magic Item Creator" + File.separator + "Item Art", item.getName() + ".png").exists()) 
+			renderArt();
 		renderHeader();
-		renderDescription();
-//		renderLore();
-		renderProperties();
+		if(!item.getDescription().isEmpty() && item.getDescription() != null) renderDescription();
+		if(!item.getTraits().isEmpty()) renderTraits();
 		return createPDF();
 	}
 	
 	private static void renderArt() {
+		String home = System.getProperty("user.home");
+		String dir = String.format("%s%sDocuments%sMagic Item Creator", home, File.separator, File.separator);
+		final File artFile = new File(dir, "Item Art");
+		artFile.mkdirs();
 		PDImageXObject pixelArt;
 		try {
-			pixelArt = PDImageXObject.createFromFile("src/main/assets/pikachu.png", doc);
-			stream.drawImage(bgImage, 0, 0, PDRectangle.LETTER.getWidth(), PDRectangle.LETTER.getHeight());
+			pixelArt = PDImageXObject.createFromFileByContent(new File(artFile, item.getName() + ".png"), doc);
 			stream.drawImage(pixelArt, width - 175, height - 175, 128, 128);
 		} catch (IOException e) {
 			System.out.println("Content stream error in renderArt method of PDFHelper");
@@ -126,20 +131,33 @@ public class PDFHelper {
 //		}
 //	}
 	
-	private static void renderProperties() {
+	private static void renderTraits() {
 		try {
 			stream.beginText();
-			stream.newLineAtOffset(50, height - 600);
+			stream.newLineAtOffset(50, height - 500);
 			stream.setFont(headerFont, 20);
 			stream.showText("Traits");
 			stream.endText();
 			
 			stream.beginText();
-			stream.newLineAtOffset(50, height - 630);
+			stream.newLineAtOffset(50, height - 530);
 			stream.setLeading(30);
 			stream.setFont(propertiesFont, 14);
-			for(String trait : item.getTraits()) {
-				stream.showText(String.format("\u2022 %s", trait));
+			for(int i = 0; i < item.getTraits().size();) {
+				stream.showText(String.format("\u2022 %s", item.getTraits().get(i)));
+				i++;
+				if(item.getTraits().size() > 7 && i < item.getTraits().size()) {
+					stream.newLineAtOffset(width / 3, 0);
+					stream.showText(String.format("\u2022 %s", item.getTraits().get(i)));
+					i++;
+					if(item.getTraits().size() > 14 && i < item.getTraits().size()) {
+						stream.newLineAtOffset(width / 3, 0);
+						stream.showText(String.format("\u2022 %s", item.getTraits().get(i)));
+						i++;
+						stream.newLineAtOffset(-width / 3, 0);
+					}
+					stream.newLineAtOffset(-width / 3, 0);
+				}
 				stream.newLine();
 			}
 			stream.endText();
