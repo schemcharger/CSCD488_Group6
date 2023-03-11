@@ -64,7 +64,7 @@ public class NewItemController implements Initializable {
 		System.out.println("Item Type: " + type);
 		System.out.println("Description: " + description);
 		
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("Menu.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Menu.fxml"));
 		root = loader.load();
 		MenuController menuController = loader.getController();
 		//TODO: CREATE METHOD IN MENUCONTROLLER THAT GRABS VALUES TAKEN FROM CREATE FUNCTION AND BRINGS THEM BACK TO MENUCONTROLLER
@@ -77,7 +77,7 @@ public class NewItemController implements Initializable {
 	}
 	
 	public void switchToMenu(ActionEvent event) throws IOException {
-		root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
+		root = FXMLLoader.load(getClass().getClassLoader().getResource("Menu.fxml"));
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setScene(scene);

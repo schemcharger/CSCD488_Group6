@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import magicitem.ItemType;
 import magicitem.MagicItem;
+import pixelart.GameWindow;
 
 public class MenuController implements Initializable {
 
@@ -49,15 +50,16 @@ public class MenuController implements Initializable {
 	private Parent root;
 	
 	public void switchToGridEditor(ActionEvent event) throws IOException {
-		root = FXMLLoader.load(getClass().getResource("GridEditor.fxml"));
-		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
+		GameWindow.openEditor(item1);
+//		root = FXMLLoader.load(getClass().getClassLoader().getResource("GridEditor.fxml"));
+//		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+//		scene = new Scene(root);
+//		stage.setScene(scene);
+//		stage.show();
 	}
 	
 	public void switchToNewItemEditor(ActionEvent event) throws IOException {
-		root = FXMLLoader.load(getClass().getResource("NewItemEditor.fxml"));
+		root = FXMLLoader.load(getClass().getClassLoader().getResource("NewItemEditor.fxml"));
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setScene(scene);

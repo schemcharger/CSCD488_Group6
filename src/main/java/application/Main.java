@@ -1,7 +1,6 @@
 package application;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
@@ -19,10 +18,10 @@ public class Main extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
+			Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Menu.fxml"));
 			Scene scene = new Scene(root);
-			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			//String css = this.getClass().getResource("application.css").toExternalForm();
+			//scene.getStylesheets().add(getClass().getClassLoader().getResource("application.css").toExternalForm());
+			//String css = this.getClass().getClassLoader().getResource("application.css").toExternalForm();
 			//scene.getStylesheets().add(css);
 			stage.setWidth(1200);
 			stage.setHeight(800);

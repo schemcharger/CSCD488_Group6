@@ -1,17 +1,21 @@
 package helpers;
 
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Scanner;
+
 import javax.imageio.ImageIO;
 
 import magicitem.ItemType;
 import magicitem.MagicItem;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.io.*;
-import java.util.Date;
-import java.util.Scanner;
 
 public class ItemHelper {
     ArrayList<MagicItem> itemList; //a sorted list of magic items
@@ -93,6 +97,10 @@ public class ItemHelper {
     }
 
     public boolean writeArt(int index){
+		String home = System.getProperty("user.home");
+		String dir = String.format("%s%sDocuments%sMagic Item Creator", home, File.separator, File.separator);
+		final File artFile = new File(dir, "Item Art");
+		artFile.mkdirs();
         MagicItem cur = this.itemList.get(index);
         Color[][] art = cur.getArt();
         int size = 512/cur.getSize();
@@ -105,8 +113,8 @@ public class ItemHelper {
             }
         }
         graphics.dispose();
-        File file = new File("export.png");
-        File backup = new File("export.png.bak");
+        File file = new File(artFile, this.itemList.get(index).getName() + ".png");
+        File backup = new File(artFile, this.itemList.get(index).getName() + ".png.bak");
         if(file.exists()){
             if(backup.exists()){
                 backup.delete();
@@ -190,6 +198,7 @@ public class ItemHelper {
                         this.addTrait(traits.get(i));
                     }
                 }
+                fin.close();
             } catch (FileNotFoundException f) {
                 e.printStackTrace();
                 f.printStackTrace();
