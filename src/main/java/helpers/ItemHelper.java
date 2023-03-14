@@ -14,11 +14,12 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
+import javafx.collections.ObservableList;
 import magicitem.ItemType;
 import magicitem.MagicItem;
 
 public class ItemHelper {
-    ArrayList<MagicItem> itemList; //a sorted list of magic items
+    ObservableList<MagicItem> itemList; //a sorted list of magic items
     ArrayList<String> traitList;
     int sortType; // what parameter to sort on. 0->date created, 1->name, 2->type
 
@@ -28,8 +29,6 @@ public class ItemHelper {
         File file = new File("itemDb");
         if(file.exists()){ //if the database exists, read the items from it. else create a blank list.
             readDB(file);
-        }else{
-            this.itemList = new ArrayList<>();
         }
     }
 
@@ -63,8 +62,7 @@ public class ItemHelper {
 
     public void Sort(){ //Add each MagicItem to a new sorted list
 
-        ArrayList<MagicItem> temp = this.itemList;
-        this.itemList = new ArrayList<>();
+        ObservableList<MagicItem> temp = this.itemList;
         for(int i=0; i<temp.size(); i++){
             this.addItem(temp.get(i));
         }
@@ -178,7 +176,6 @@ public class ItemHelper {
     }
 
     private void readDB(File file){//Create an itemList from the database
-        this.itemList = new ArrayList<>();
         try { //Use a scanner to read the file
             Scanner fin = new Scanner(file);
             while(fin.hasNextLine()) {
@@ -238,8 +235,14 @@ public class ItemHelper {
                 item.updateArt(new Color(rgb, true), x, y);
             }
         }
-
         return item;
+    }
+    
+    public ObservableList<MagicItem> getItemList() {
+    	if(this.itemList == null) {
+    		throw new NullPointerException("ObservableList in ItemHelper is null");
+    	}
+    	return this.itemList;
     }
 
 }
