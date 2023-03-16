@@ -20,6 +20,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import magicitem.ItemType;
+import magicitem.MagicItem;
 
 public class NewItemController implements Initializable {
 	
@@ -31,6 +32,7 @@ public class NewItemController implements Initializable {
 	@FXML private Label descriptionIdentifierText;
 	@FXML private TextArea descriptionBox;
 	
+	protected static boolean exit = false;
 	private Stage stage;
 	private Scene scene;
 	private Parent root;
@@ -58,17 +60,16 @@ public class NewItemController implements Initializable {
 	
 	public void create(ActionEvent event) throws IOException {
 		//TODO: ADD NULL CHECKING AND DON'T LET THEM LEAVE UNTIL EVERYTHING IS FILLED OUT
+		exit = false;
 		name = itemNameTextField.getText();
 		description = descriptionBox.getText();
-		System.out.println("Name: " + name);
-		System.out.println("Item Type: " + type);
-		System.out.println("Description: " + description);
 		
 		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Menu.fxml"));
 		root = loader.load();
 		MenuController menuController = loader.getController();
-		//TODO: CREATE METHOD IN MENUCONTROLLER THAT GRABS VALUES TAKEN FROM CREATE FUNCTION AND BRINGS THEM BACK TO MENUCONTROLLER
-		// 1:21:03 in Bro Code video for reference
+		MagicItem item = new MagicItem(name, type, description);
+		//item.addTrait("test trait");
+		menuController.addNewItem(item);
 		
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
@@ -77,6 +78,7 @@ public class NewItemController implements Initializable {
 	}
 	
 	public void switchToMenu(ActionEvent event) throws IOException {
+		exit = true;
 		root = FXMLLoader.load(getClass().getClassLoader().getResource("Menu.fxml"));
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(root);

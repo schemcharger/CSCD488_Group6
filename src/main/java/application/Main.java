@@ -1,5 +1,6 @@
 package application;
 
+import helpers.ItemHelper;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -10,6 +11,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 
 public class Main extends Application {
+	
+	protected static boolean opened = false;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -33,6 +36,7 @@ public class Main extends Application {
 					event.consume();
 					exitProgram(stage);
 				});
+			opened = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

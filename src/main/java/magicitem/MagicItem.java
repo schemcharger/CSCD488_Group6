@@ -33,7 +33,9 @@ public class MagicItem implements Comparable<MagicItem>{
         this.created = created;
         this.name = name;
         this.type = type;
+        this.traits = new ArrayList<>();
         this.setDescription(description);
+        this.setSize(8);
     }
 
 	public String getName() {

@@ -132,7 +132,7 @@ public class ItemHelper {
         return true;
     }
 
-    private static boolean addItem(MagicItem item) { // add an item to the itemList based on the sort type
+    public static boolean addItem(MagicItem item) { // add an item to the itemList based on the sort type
 
         try{
             for(int i=0; i<itemList.size(); i++){
@@ -176,8 +176,8 @@ public class ItemHelper {
         traitList.add(trait.toLowerCase());
     }
 
-    public static  ObservableList<MagicItem> readDB(){//Create an itemList from the database
-        itemList = FXCollections.observableArrayList();
+    public static ObservableList<MagicItem> readDB(){//Create an itemList from the database
+        //itemList = FXCollections.observableArrayList();
         try { //Use a scanner to read the file
             File file = new File("itemDb");
             Scanner fin = new Scanner(file);
@@ -244,11 +244,12 @@ public class ItemHelper {
     
     public static ObservableList<MagicItem> getItemList() {
     	if(itemList == null) {
-    		throw new NullPointerException("ObservableList in ItemHelper is null");
+    		itemList = FXCollections.observableArrayList();
+    		//throw new NullPointerException("ObservableList in ItemHelper is null");
     	}
     	return itemList;
     }
-
+    
 }
 
 

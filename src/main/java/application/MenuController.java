@@ -1,9 +1,12 @@
 package application;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import helpers.ItemHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -15,11 +18,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -34,12 +41,8 @@ public class MenuController implements Initializable {
 	@FXML private ChoiceBox<ItemType> itemTypeChoiceBox;
 	@FXML private Label itemTypeLabel;
 	@FXML private TextArea descriptionBox;
-	
-	// MagicItem objects used for testing
-	private MagicItem item1 = new MagicItem("item1", ItemType.WEAPON, "This is item1 This is item1 This is item1 This is item1 This is item1 This is item1 This is item1 This is item1 This is item1 This is item1");
-	private MagicItem item2 = new MagicItem("item2", ItemType.GENERIC, "This is item2");	
-	private ObservableList<MagicItem> magicItemList = FXCollections.observableArrayList(item1, item2);
-	@FXML private ListView<MagicItem> listView = new ListView<MagicItem>(magicItemList);
+	@FXML private TextField searchBar;
+	@FXML private ListView<MagicItem> listView = new ListView<MagicItem>(ItemHelper.getItemList());
 	MagicItem currentItem;
 	
 	// ItemType array to associate with ItemTypes
@@ -50,12 +53,7 @@ public class MenuController implements Initializable {
 	private Parent root;
 	
 	public void switchToGridEditor(ActionEvent event) throws IOException {
-		GameWindow.openEditor(item1);
-//		root = FXMLLoader.load(getClass().getClassLoader().getResource("GridEditor.fxml"));
-//		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-//		scene = new Scene(root);
-//		stage.setScene(scene);
-//		stage.show();
+		GameWindow.openEditor(currentItem);
 	}
 	
 	public void switchToNewItemEditor(ActionEvent event) throws IOException {
@@ -68,9 +66,18 @@ public class MenuController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		if (Main.opened && !NewItemController.exit) {
+			flushDB();
+		}
 		
-		// List of Magic Items Section
-		listView.getItems().addAll(magicItemList);
+		ObservableList<MagicItem> list;
+		if (NewItemController.exit) { // If we are coming from exit button in NewItemController, get original itemList
+			list = ItemHelper.getItemList();
+			listView.getItems().addAll(ItemHelper.getItemList());
+		} else {
+			list = ItemHelper.readDB();
+			listView.getItems().addAll(list);
+		}
 		listView.setCellFactory(new Callback<ListView<MagicItem>, ListCell<MagicItem>>() { // This allows a cell in the list to be changed to what we want
 
 			@Override
@@ -86,9 +93,7 @@ public class MenuController implements Initializable {
 				currentItem = listView.getSelectionModel().getSelectedItem();
 				descriptionBox.setText(currentItem.getDescription());
 				itemTypeLabel.setText(currentItem.getType().toString());
-				
-				selectedItem.setText(currentItem.getName());
-				
+				selectedItem.setText(currentItem.getName());		
 			}
 			
 		});
@@ -124,8 +129,35 @@ public class MenuController implements Initializable {
 		}
 	}
 	
-	public void addNewItem(ActionEvent event) {
-		//TODO: This is where MenuController will receive the new Magic Items from NewItemController and add it to the list/database
+	public void addNewItem(MagicItem item) {
+		ItemHelper.addItem(item);
+		ItemHelper.writeDB(ItemHelper.getItemList());
+		listView.getItems().add(item);
+	}
+	
+	public void deleteItem() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Delete");
+		alert.setHeaderText("You are about to delete the selected item");
+		alert.setContentText("Are you sure you want to delete this item?");
+		
+		if(alert.showAndWait().get() == ButtonType.OK) {
+			ObservableList<MagicItem> list = ItemHelper.getItemList();
+			int index = listView.getSelectionModel().getSelectedIndex();
+			list.remove(index);
+			flushDB();
+			ItemHelper.writeDB(list);
+			listView.getItems().remove(index);
+		}
+	}
+	
+	public void exportToPDF() {
+		//TODO: Add PDFHelper functionality, just call the variable currentItem for the selected item to export
+		System.out.println("Export complete");
+	}
+	
+	public void search(ActionEvent event) {
+		//TODO: Add search functionality across magic items, then update the listView
 	}
 	
 	public void changeItemType(ActionEvent event) {
@@ -140,6 +172,12 @@ public class MenuController implements Initializable {
 		} else if (itemType.equals(ItemType.WEAPON)) {
 			currentItem.setType(ItemType.WEAPON);
 		}
+		
+		flushDB();
+		ItemHelper.writeDB(ItemHelper.getItemList());
+		// Causes NullPointerException, not sure why but seems to be working otherwise?
+		listView.getItems().removeAll(ItemHelper.getItemList());
+		listView.getItems().addAll(ItemHelper.getItemList());
 	}
 	
 	public void changeDescription(KeyEvent event) {
@@ -147,5 +185,19 @@ public class MenuController implements Initializable {
 		currentItem = listView.getSelectionModel().getSelectedItem();
 		System.out.println(description); // just for testing
 		currentItem.setDescription(description);
+		
+	}
+	
+	private void flushDB() {
+		File file = new File("itemDB");
+		FileWriter fw;
+		try {
+			fw = new FileWriter(file, false);
+			fw.flush();
+			fw.close();
+			System.out.println("file cleared");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
