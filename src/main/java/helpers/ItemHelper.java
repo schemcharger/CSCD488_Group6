@@ -14,34 +14,36 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableListBase;
 import magicitem.ItemType;
 import magicitem.MagicItem;
 
 public class ItemHelper {
-    ObservableList<MagicItem> itemList; //a sorted list of magic items
-    ArrayList<String> traitList;
-    int sortType; // what parameter to sort on. 0->date created, 1->name, 2->type
+    static ObservableList<MagicItem> itemList; //a sorted list of magic items
+    static ArrayList<String> traitList;
+    static int sortType; // what parameter to sort on. 0->date created, 1->name, 2->type
 
-    public ItemHelper() {
+    /*public ItemHelper() {
         this.sortType = 0;
         this.traitList = new ArrayList<>();
         File file = new File("itemDb");
         if(file.exists()){ //if the database exists, read the items from it. else create a blank list.
             readDB(file);
         }
-    }
+    }*/
 
-    public MagicItem load(int i){ //pick a magic item from the sorted list.
+    /*public MagicItem load(int i){ //pick a magic item from the sorted list.
         if(i<0||i>=itemList.size()){ //check if the index is in the list
             throw new IllegalArgumentException("Invalid item");
         }
         MagicItem item = itemList.get(i);
         itemList.remove(i); //the magic item gets removed from the list to ensure a duplicate is not saved.
         return item;
-    }
+    }*/
 
-    public boolean Save(MagicItem item){
+    /*public boolean Save(MagicItem item){
         if (item == null) { //check if the item is valid
             throw new IllegalArgumentException("Cannot save Null item");
         }
@@ -50,25 +52,25 @@ public class ItemHelper {
             this.writeDB();
         }
         return added;
-    }
+    }*/
 
-    public void SetSortType(int type){
+    public static void SetSortType(int type){
         if(type<0||type>2){ //check if the sort type is valid
             throw new IllegalArgumentException("Unknown sort type");
         }
-        this.sortType = type;
-        this.Sort(); //Once the sort type is changed, sort the list.
+        sortType = type;
     }
 
-    public void Sort(){ //Add each MagicItem to a new sorted list
+    public static ObservableList<MagicItem> Sort(ObservableList<MagicItem> list){ //Add each MagicItem to a new sorted list  //move to menu controller
 
-        ObservableList<MagicItem> temp = this.itemList;
-        for(int i=0; i<temp.size(); i++){
-            this.addItem(temp.get(i));
+        itemList = FXCollections.observableArrayList();
+        for(int i=0; i<list.size(); i++){
+            addItem(list.get(i));
         }
+        return itemList;
     }
 
-    public void writeDB(){
+    public static void writeDB(ObservableList<MagicItem> list){
         File backup = new File("itemDb.bak");//the database backup
         File file = new File("itemDb"); // the database
         if(file.exists()){ //if the database file already exists, copy it to the backup file
@@ -81,8 +83,8 @@ public class ItemHelper {
         try{ // write the itemlist out to the database file
             file.createNewFile();
             PrintStream fout = new PrintStream(file);
-            for(int i=0; i<this.itemList.size(); i++){
-                fout.println(itemList.get(i).toString());
+            for(int i=0; i<list.size(); i++){
+                fout.println(list.get(i).toString());
             }
             fout.close();
         }catch(Exception e){
@@ -94,12 +96,11 @@ public class ItemHelper {
 
     }
 
-    public boolean writeArt(int index){
+    public static boolean writeArt(MagicItem cur){
 		String home = System.getProperty("user.home");
 		String dir = String.format("%s%sDocuments%sMagic Item Creator", home, File.separator, File.separator);
 		final File artFile = new File(dir, "Item Art");
 		artFile.mkdirs();
-        MagicItem cur = this.itemList.get(index);
         Color[][] art = cur.getArt();
         int size = 512/cur.getSize();
         BufferedImage artOut = new BufferedImage(512, 512, BufferedImage.TYPE_INT_ARGB);
@@ -111,8 +112,8 @@ public class ItemHelper {
             }
         }
         graphics.dispose();
-        File file = new File(artFile, this.itemList.get(index).getName() + ".png");
-        File backup = new File(artFile, this.itemList.get(index).getName() + ".png.bak");
+        File file = new File(artFile, cur.getName() + ".png");
+        File backup = new File(artFile, cur.getName() + ".png.bak");
         if(file.exists()){
             if(backup.exists()){
                 backup.delete();
@@ -131,28 +132,28 @@ public class ItemHelper {
         return true;
     }
 
-    private boolean addItem(MagicItem item) { // add an item to the itemList based on the sort type
+    private static boolean addItem(MagicItem item) { // add an item to the itemList based on the sort type
 
         try{
-            for(int i=0; i<this.itemList.size(); i++){
-                if(this.sortType==0){
-                    if(item.getCreated().compareTo(this.itemList.get(i).getCreated())<0){
-                        this.itemList.add(i, item);
+            for(int i=0; i<itemList.size(); i++){
+                if(sortType==0){
+                    if(item.getCreated().compareTo(itemList.get(i).getCreated())<0){
+                        itemList.add(i, item);
                         return true;
                     }
-                }else if(this.sortType==1){
-                    if(item.getName().compareTo(this.itemList.get(i).getName())<0){
-                        this.itemList.add(i, item);
+                }else if(sortType==1){
+                    if(item.getName().compareTo(itemList.get(i).getName())<0){
+                        itemList.add(i, item);
                         return true;
                     }
                 }else{
-                    if(item.getType().compareTo(this.itemList.get(i).getType())<0){
-                        this.itemList.add(i, item);
+                    if(item.getType().compareTo(itemList.get(i).getType())<0){
+                        itemList.add(i, item);
                         return true;
                     }
                 }
             }
-            this.itemList.add(item);
+            itemList.add(item);
             return true;
         }catch(Exception e) {
             return false;
@@ -160,26 +161,28 @@ public class ItemHelper {
     }
 
 
-    public void addTrait(String trait){
+    public static void addTrait(String trait){
         if(trait==null||trait.isEmpty()){
             throw new IllegalArgumentException("Invalid Trait");
         }
-        for(int i=0; i< this.traitList.size(); i++){
-            if(trait.toLowerCase().compareTo(this.traitList.get(i))<0){
-                this.traitList.add(i, trait.toLowerCase());
+        for(int i=0; i< traitList.size(); i++){
+            if(trait.toLowerCase().compareTo(traitList.get(i))<0){
+                traitList.add(i, trait.toLowerCase());
                 return;
             }else if(trait.toLowerCase().equals(traitList.get(i))){
                 return;
             }
         }
-        this.traitList.add(trait.toLowerCase());
+        traitList.add(trait.toLowerCase());
     }
 
-    private void readDB(File file){//Create an itemList from the database
+    public static  ObservableList<MagicItem> readDB(){//Create an itemList from the database
+        itemList = FXCollections.observableArrayList();
         try { //Use a scanner to read the file
+            File file = new File("itemDb");
             Scanner fin = new Scanner(file);
             while(fin.hasNextLine()) {
-                this.addItem(parseItem(fin.nextLine()));
+                addItem(parseItem(fin.nextLine()));
 
             }
             fin.close();
@@ -189,10 +192,10 @@ public class ItemHelper {
                 Scanner fin = new Scanner(backup);
                 while(fin.hasNextLine()) {
                     MagicItem item = parseItem(fin.nextLine());
-                    this.addItem(item);
+                    addItem(item);
                     ArrayList<String> traits = item.getTraits();
                     for(int i=0; i<traits.size(); i++){
-                        this.addTrait(traits.get(i));
+                        addTrait(traits.get(i));
                     }
                 }
                 fin.close();
@@ -201,6 +204,7 @@ public class ItemHelper {
                 f.printStackTrace();
             }
         }
+        return itemList;
     }
 
     static MagicItem parseItem(String in){ //Parse a string in the format from MagicItem.toString
@@ -238,11 +242,11 @@ public class ItemHelper {
         return item;
     }
     
-    public ObservableList<MagicItem> getItemList() {
-    	if(this.itemList == null) {
+    public static ObservableList<MagicItem> getItemList() {
+    	if(itemList == null) {
     		throw new NullPointerException("ObservableList in ItemHelper is null");
     	}
-    	return this.itemList;
+    	return itemList;
     }
 
 }
