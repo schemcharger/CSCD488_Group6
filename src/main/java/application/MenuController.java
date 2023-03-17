@@ -51,6 +51,7 @@ public class MenuController implements Initializable {
 	@FXML private Label itemTypeLabel;
 	@FXML private TextArea descriptionBox;
 	@FXML private TextField searchBar;
+	@FXML private ChoiceBox<String> searchChoiceBox;
 	@FXML private Button exportButton;
 	@FXML private Button editArtButton;
 	@FXML private Button saveButton;
@@ -59,6 +60,8 @@ public class MenuController implements Initializable {
 	
 	// ItemType array to associate with ItemTypes
 	private ItemType[] itemTypes = {ItemType.ARMOUR, ItemType.CATALYST, ItemType.GENERIC, ItemType.WEAPON};
+	
+	private String[] searchFilter = {"Name", "Item Type"};
 	
 	private Stage stage;
 	private Scene scene;
@@ -148,6 +151,9 @@ public class MenuController implements Initializable {
 		
 		// Description Section
 		descriptionBox.getText();
+		
+		// Search Section
+		searchChoiceBox.getItems().addAll(searchFilter);
 		
 	}
 	
