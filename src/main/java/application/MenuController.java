@@ -223,27 +223,30 @@ public class MenuController implements Initializable {
 	}
 	
 	public void search(ActionEvent event) {
-		//TODO: Add search functionality across magic items, then update the listView
 		String param = searchBar.getText();
 		ObservableList<MagicItem> masterList = ItemHelper.getItemList();
+		int sortType = searchChoiceBox.getSelectionModel().getSelectedIndex();
+		if(sortType==0||sortType==1){
+			ItemHelper.SetSortType(sortType);
+		}
 		if(param==null || param.isEmpty()){
-			listView.setItems(masterList);
+			listView.setItems(ItemHelper.Sort(masterList));
 		}else{
 			ObservableList<MagicItem> searchList = FXCollections.observableArrayList();
 			MagicItem item;
 			for(int i=0; i<masterList.size(); i++){
 				item = masterList.get(i);
-				if(ItemHelper.getSortType()==1) {
+				if(ItemHelper.getSortType()==0) {
 					if (item.getName().toLowerCase().contains(param.toLowerCase())) {
 						searchList.add(item);
 					}
-				}else if(ItemHelper.getSortType()==2){
+				}else if(ItemHelper.getSortType()==1){
 					if (item.getType().name().toLowerCase().contains(param.toLowerCase())) {
 						searchList.add(item);
 					}
 				}
 			}
-			listView.setItems(searchList);
+			listView.setItems(ItemHelper.Sort(searchList));
 		}
 
 
@@ -252,6 +255,9 @@ public class MenuController implements Initializable {
 	public void changeItemType(ActionEvent event) {
 		ItemType itemType = itemTypeChoiceBox.getValue();
 		currentItem = listView.getSelectionModel().getSelectedItem();
+		if(!currentItem.getType().equals(itemType)){
+			Main.saved = false;
+		}
 		if (itemType.equals(ItemType.ARMOUR)) {
 			currentItem.setType(ItemType.ARMOUR);
 		} else if (itemType.equals(ItemType.CATALYST)) {
