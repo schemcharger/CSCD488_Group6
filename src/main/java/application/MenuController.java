@@ -5,12 +5,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import helpers.ItemHelper;
 import helpers.PDFHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -216,6 +218,23 @@ public class MenuController implements Initializable {
 	
 	public void search(ActionEvent event) {
 		//TODO: Add search functionality across magic items, then update the listView
+		String param = searchBar.getText();
+		ObservableList<MagicItem> masterList = ItemHelper.getItemList();
+		if(param==null || param.isEmpty()){
+			listView.setItems(masterList);
+		}else{
+			ObservableList<MagicItem> searchList = FXCollections.observableArrayList();
+			MagicItem item;
+			for(int i=0; i<masterList.size(); i++){
+				item = masterList.get(i);
+				if(item.getName().toLowerCase().contains(param.toLowerCase())){
+					searchList.add(item);
+				}
+			}
+			listView.setItems(searchList);
+		}
+
+
 	}
 	
 	public void changeItemType(ActionEvent event) {
