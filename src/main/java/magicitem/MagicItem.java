@@ -156,9 +156,9 @@ public class MagicItem implements Comparable<MagicItem>{
         out+=", \"traits\":[";
         if(!this.traits.isEmpty()) {
             for (int i = 0; i < this.traits.size() - 1; i++) {
-                out += "\""+this.traits.get(i)+"\"; ";
+                out += this.traits.get(i)+"; ";
             }
-            out+= "\"" + this.traits.get(this.traits.size()-1) +"\"";
+            out += this.traits.get(this.traits.size()-1);
         }
         out+="], \"size\":" + size +", \"art\":[";
 

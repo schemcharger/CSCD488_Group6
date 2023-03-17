@@ -1,5 +1,6 @@
 package application;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,9 +8,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import helpers.ItemHelper;
+import helpers.PDFHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,15 +20,17 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import magicitem.ItemType;
@@ -93,6 +96,7 @@ public class MenuController implements Initializable {
 				currentItem = listView.getSelectionModel().getSelectedItem();
 				descriptionBox.setText(currentItem.getDescription());
 				itemTypeLabel.setText(currentItem.getType().toString());
+				itemTypeChoiceBox.getSelectionModel().select(currentItem.getType());
 				selectedItem.setText(currentItem.getName());		
 			}
 			
@@ -152,8 +156,30 @@ public class MenuController implements Initializable {
 	}
 	
 	public void exportToPDF() {
-		//TODO: Add PDFHelper functionality, just call the variable currentItem for the selected item to export
-		System.out.println("Export complete");
+		if(currentItem != null) {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Export");
+			alert.setHeaderText("The currently selected item will be exported to a PDF.");
+			alert.setContentText("This will be saved in Documents under 'Magic Item Creator'.");
+			
+			if(alert.showAndWait().get() == ButtonType.OK) {
+				PDFHelper.renderPDF(currentItem);
+				System.out.println("Export complete");
+				
+				Alert confirm = new Alert(AlertType.INFORMATION);
+				confirm.setTitle("Success");
+				confirm.setHeaderText("Item successfully exported");
+				confirm.setContentText("The PDF is located in Documents under 'Magic Item Creator'.");
+				confirm.show();
+			}
+		}
+		else {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("No Item Selected");
+			alert.setHeaderText("No item is currently selected to export.");
+			alert.setContentText("Please select an item first.");
+			alert.show();
+		}
 	}
 	
 	public void search(ActionEvent event) {
@@ -174,10 +200,7 @@ public class MenuController implements Initializable {
 		}
 		
 		flushDB();
-		ItemHelper.writeDB(ItemHelper.getItemList());
-		// Causes NullPointerException, not sure why but seems to be working otherwise?
-		listView.getItems().removeAll(ItemHelper.getItemList());
-		listView.getItems().addAll(ItemHelper.getItemList());
+		listView.refresh();
 	}
 	
 	public void changeDescription(KeyEvent event) {
@@ -199,5 +222,25 @@ public class MenuController implements Initializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		ItemHelper.writeDB(ItemHelper.getItemList());
+	}
+	
+	public static Color colorPicker() {
+		Stage colorPicker = new Stage();
+		colorPicker.setTitle("Color Picker");
+		
+		ColorPicker picker = new ColorPicker();
+		
+		javafx.scene.paint.Color value = picker.getValue();
+		VBox box = new VBox(picker);
+		Scene s = new Scene(box, 960, 600);
+		
+		colorPicker.setScene(s);
+		colorPicker.show();
+		Color c = new Color((float) value.getRed(),
+				(float) value.getGreen(),
+				(float) value.getBlue(),
+				(float) value.getOpacity());
+		return c;
 	}
 }

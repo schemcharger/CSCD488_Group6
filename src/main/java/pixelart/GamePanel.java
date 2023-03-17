@@ -1,19 +1,15 @@
 package pixelart;
 
-import magicitem.MagicItem;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Scanner;
 
 import javax.swing.JPanel;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import magicitem.MagicItem;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -24,7 +20,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 
 	// fields
-    private BufferedImage img;
+    //private BufferedImage img;
 
 
     //Tile Screen Settings
@@ -82,11 +78,15 @@ public class GamePanel extends JPanel implements Runnable{
             //Save
             if(keyH.savePressed==true){
                 this.tileM.SaveMap();
+                Alert confirm = new Alert(AlertType.CONFIRMATION);
+                confirm.setHeaderText("Pixel Art Saved");
+                confirm.show();
             }
             keyH.setSavePressed();
             //Color Swap
             if(keyH.changeColorPlus==true){
-                this.cursor.setColorChoice(new Color(237, 50, 104));
+            	//this.cursor.setColorChoice(MenuController.colorPicker());
+            	 this.cursor.setColorChoice(new Color(255, 0, 0, 255));
             }
             keyH.setChangeColorPlus();
             //Place
