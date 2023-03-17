@@ -85,7 +85,7 @@ public class GamePanel extends JPanel implements Runnable{
             if(keyH.savePressed==true){
             	gamePanelSave = true;
                 this.tileM.SaveMap();
-                FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Menu.fxml"));
+                /*FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Menu.fxml"));
         		try {
 					Parent root = loader.load();
 				} catch (IOException e) {
@@ -93,7 +93,7 @@ public class GamePanel extends JPanel implements Runnable{
 				}
         		MenuController menuController = loader.getController();
                 menuController.save();
-                gamePanelSave = false;
+                gamePanelSave = false;*/
             }
             keyH.setSavePressed();
             keyH.setChangeColorPlus();
