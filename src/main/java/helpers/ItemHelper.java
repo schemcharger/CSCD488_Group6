@@ -16,7 +16,6 @@ import javax.imageio.ImageIO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableListBase;
 import magicitem.ItemType;
 import magicitem.MagicItem;
 
@@ -132,7 +131,7 @@ public class ItemHelper {
         return true;
     }
 
-    private static boolean addItem(MagicItem item) { // add an item to the itemList based on the sort type
+    public static boolean addItem(MagicItem item) { // add an item to the itemList based on the sort type
 
         try{
             for(int i=0; i<itemList.size(); i++){
@@ -176,8 +175,8 @@ public class ItemHelper {
         traitList.add(trait.toLowerCase());
     }
 
-    public static  ObservableList<MagicItem> readDB(){//Create an itemList from the database
-        itemList = FXCollections.observableArrayList();
+    public static ObservableList<MagicItem> readDB(){//Create an itemList from the database
+        //itemList = FXCollections.observableArrayList();
         try { //Use a scanner to read the file
             File file = new File("itemDb");
             Scanner fin = new Scanner(file);
@@ -212,7 +211,8 @@ public class ItemHelper {
             throw new IllegalArgumentException("Null parser input");
         }
         String[] str = in.substring(1).split(", ");
-        Date created = new Date(str[0].substring(11, str[0].length()-1));
+        @SuppressWarnings("deprecation")
+		Date created = new Date(str[0].substring(11, str[0].length()-1));
         String name = str[1].substring(8, str[1].length()-1);
         ItemType type = ItemType.valueOf(str[2].substring(8, str[2].length()-1));
         String description;
@@ -222,9 +222,11 @@ public class ItemHelper {
             description = str[3].substring(15, str[3].length()-1);
         }
         MagicItem item = new MagicItem(created, name, type, description);
-        String[] traits = str[4].substring(1, str[4].length()).split("; ");
-        for(int i=0; i< traits.length; i++){
-            item.addTrait(traits[i]);
+        if(str[4].substring(10, str[4].length() - 1) != "") {
+        	String[] traits = str[4].substring(10, str[4].length() - 1).split("; ");
+        	for(int i=0; i< traits.length; i++){
+        		item.addTrait(traits[i]);
+        	}
         }
         item.setSize(Integer.parseInt(str[5].substring(7)));
         if(!str[6].substring(6, str[6].length()-1).equals("[]")){
@@ -244,11 +246,12 @@ public class ItemHelper {
     
     public static ObservableList<MagicItem> getItemList() {
     	if(itemList == null) {
-    		throw new NullPointerException("ObservableList in ItemHelper is null");
+    		itemList = FXCollections.observableArrayList();
+    		//throw new NullPointerException("ObservableList in ItemHelper is null");
     	}
     	return itemList;
     }
-
+    
 }
 
 

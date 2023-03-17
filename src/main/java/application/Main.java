@@ -2,14 +2,17 @@ package application;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 
 public class Main extends Application {
+	
+	protected static boolean opened = false;
+	public static boolean saved = true;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -33,20 +36,27 @@ public class Main extends Application {
 					event.consume();
 					exitProgram(stage);
 				});
+			opened = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void exitProgram(Stage stage) {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Exit");
-		alert.setHeaderText("You're about to close the program");
-		alert.setContentText("Are you sure you want to close before saving?");
 		
-		if(alert.showAndWait().get() == ButtonType.OK) {
+		if (saved) {
 			System.out.println("You successfully exited the program");
 			stage.close();
+		} else {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Exit");
+			alert.setHeaderText("You're about to close the program");
+			alert.setContentText("Are you sure you want to close before saving?");
+			
+			if(alert.showAndWait().get() == ButtonType.OK) {
+				System.out.println("You successfully exited the program");
+				stage.close();
+			}
 		}
 	}
 }

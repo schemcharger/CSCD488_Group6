@@ -86,7 +86,7 @@ public class KeyHandler implements KeyListener {
         leftPressed=false;
     }
     public void setRightPressed(){
-        leftPressed=false;
+        rightPressed=false;
     }
     public void setSavePressed(){
         savePressed=false;

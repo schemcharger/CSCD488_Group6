@@ -1,15 +1,14 @@
 package pixelart;
 
-import magicitem.MagicItem;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
+
+import magicitem.MagicItem;
 
 
 public class TileManager {

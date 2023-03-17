@@ -1,12 +1,16 @@
 package application;
 
+import java.awt.Color;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import helpers.ItemHelper;
+import helpers.PDFHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,16 +19,26 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import magicitem.ItemType;
 import magicitem.MagicItem;
+import pixelart.GamePanel;
 import pixelart.GameWindow;
 
 public class MenuController implements Initializable {
@@ -34,12 +48,11 @@ public class MenuController implements Initializable {
 	@FXML private ChoiceBox<ItemType> itemTypeChoiceBox;
 	@FXML private Label itemTypeLabel;
 	@FXML private TextArea descriptionBox;
-	
-	// MagicItem objects used for testing
-	private MagicItem item1 = new MagicItem("item1", ItemType.WEAPON, "This is item1 This is item1 This is item1 This is item1 This is item1 This is item1 This is item1 This is item1 This is item1 This is item1");
-	private MagicItem item2 = new MagicItem("item2", ItemType.GENERIC, "This is item2");	
-	private ObservableList<MagicItem> magicItemList = FXCollections.observableArrayList(item1, item2);
-	@FXML private ListView<MagicItem> listView = new ListView<MagicItem>(magicItemList);
+	@FXML private TextField searchBar;
+	@FXML private Button exportButton;
+	@FXML private Button editArtButton;
+	@FXML private Button saveButton;
+	@FXML private ListView<MagicItem> listView = new ListView<MagicItem>(ItemHelper.getItemList());
 	MagicItem currentItem;
 	
 	// ItemType array to associate with ItemTypes
@@ -49,13 +62,22 @@ public class MenuController implements Initializable {
 	private Scene scene;
 	private Parent root;
 	
-	public void switchToGridEditor(ActionEvent event) throws IOException {
-		GameWindow.openEditor(item1);
-//		root = FXMLLoader.load(getClass().getClassLoader().getResource("GridEditor.fxml"));
-//		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-//		scene = new Scene(root);
-//		stage.setScene(scene);
-//		stage.show();
+	public void switchToGridEditor(ActionEvent event) {
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader();
+			fxmlLoader.setLocation((getClass().getResource("/ColorPicker.fxml")));
+			Parent newRoot = fxmlLoader.load();
+			Stage newStage = new Stage();
+			newStage.initModality(Modality.APPLICATION_MODAL);
+			newStage.resizableProperty().setValue(false);
+			newStage.initStyle(StageStyle.UTILITY);
+			newStage.setTitle("Color Picker");
+			newStage.setScene(new Scene(newRoot));
+			newStage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		GameWindow.openEditor(currentItem);
 	}
 	
 	public void switchToNewItemEditor(ActionEvent event) throws IOException {
@@ -68,9 +90,22 @@ public class MenuController implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		if (Main.opened && !NewItemController.exit && !GamePanel.gamePanelSave) {
+			flushDB();
+			System.out.println("Init");
+		}
 		
-		// List of Magic Items Section
-		listView.getItems().addAll(magicItemList);
+		exportButton.setDisable(true);
+		editArtButton.setDisable(true);
+		saveButton.setDisable(true);
+		ObservableList<MagicItem> list;
+		if (NewItemController.exit) { // If we are coming from exit button in NewItemController, get original itemList
+			list = ItemHelper.getItemList();
+			listView.getItems().addAll(ItemHelper.getItemList());
+		} else {
+			list = ItemHelper.readDB();
+			listView.getItems().addAll(list);
+		}
 		listView.setCellFactory(new Callback<ListView<MagicItem>, ListCell<MagicItem>>() { // This allows a cell in the list to be changed to what we want
 
 			@Override
@@ -84,11 +119,14 @@ public class MenuController implements Initializable {
 			@Override
 			public void changed(ObservableValue<? extends MagicItem> arg0, MagicItem arg1, MagicItem arg2) {
 				currentItem = listView.getSelectionModel().getSelectedItem();
+				exportButton.setDisable(false);
+				editArtButton.setDisable(false);
+				saveButton.setDisable(false);
+				
 				descriptionBox.setText(currentItem.getDescription());
 				itemTypeLabel.setText(currentItem.getType().toString());
-				
-				selectedItem.setText(currentItem.getName());
-				
+				itemTypeChoiceBox.getSelectionModel().select(currentItem.getType());
+				selectedItem.setText(currentItem.getName());		
 			}
 			
 		});
@@ -124,8 +162,60 @@ public class MenuController implements Initializable {
 		}
 	}
 	
-	public void addNewItem(ActionEvent event) {
-		//TODO: This is where MenuController will receive the new Magic Items from NewItemController and add it to the list/database
+	public void addNewItem(MagicItem item) {
+		ItemHelper.addItem(item);
+		/*flushDB();
+		ItemHelper.writeDB(ItemHelper.getItemList());*/
+		listView.getItems().add(item);
+		Main.saved = false;
+	}
+	
+	public void deleteItem() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Delete");
+		alert.setHeaderText("You are about to delete the selected item");
+		alert.setContentText("Are you sure you want to delete this item?");
+		
+		if(alert.showAndWait().get() == ButtonType.OK) {
+			ObservableList<MagicItem> list = ItemHelper.getItemList();
+			int index = listView.getSelectionModel().getSelectedIndex();
+			list.remove(index);
+			flushDB();
+			ItemHelper.writeDB(list);
+			listView.getItems().remove(index);
+		}
+		Main.saved = false;
+	}
+	
+	public void exportToPDF() {
+		if(currentItem != null) {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Export");
+			alert.setHeaderText("The currently selected item will be exported to a PDF.");
+			alert.setContentText("This will be saved in Documents under 'Magic Item Creator'.");
+			
+			if(alert.showAndWait().get() == ButtonType.OK) {
+				PDFHelper.renderPDF(currentItem);
+				System.out.println("Export complete");
+				
+				Alert confirm = new Alert(AlertType.INFORMATION);
+				confirm.setTitle("Success");
+				confirm.setHeaderText("Item successfully exported");
+				confirm.setContentText("The PDF is located in Documents under 'Magic Item Creator'.");
+				confirm.show();
+			}
+		}
+		else {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("No Item Selected");
+			alert.setHeaderText("No item is currently selected to export.");
+			alert.setContentText("Please select an item first.");
+			alert.show();
+		}
+	}
+	
+	public void search(ActionEvent event) {
+		//TODO: Add search functionality across magic items, then update the listView
 	}
 	
 	public void changeItemType(ActionEvent event) {
@@ -140,12 +230,55 @@ public class MenuController implements Initializable {
 		} else if (itemType.equals(ItemType.WEAPON)) {
 			currentItem.setType(ItemType.WEAPON);
 		}
+		
+		Main.saved = false;
+		listView.refresh();
 	}
 	
 	public void changeDescription(KeyEvent event) {
 		String description = descriptionBox.getText();
 		currentItem = listView.getSelectionModel().getSelectedItem();
-		System.out.println(description); // just for testing
 		currentItem.setDescription(description);
+		Main.saved = false;
+	}
+	
+	private void flushDB() {
+		File file = new File("itemDB");
+		FileWriter fw;
+		try {
+			fw = new FileWriter(file, false);
+			fw.flush();
+			fw.close();
+			System.out.println("file cleared");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/*public static Color colorPicker() {
+		Stage colorPicker = new Stage();
+		colorPicker.setTitle("Color Picker");
+		
+		ColorPicker picker = new ColorPicker();
+		
+		javafx.scene.paint.Color value = picker.getValue();
+		VBox box = new VBox(picker);
+		Scene s = new Scene(box, 960, 600);
+		
+		colorPicker.setScene(s);
+		colorPicker.show();
+		Color c = new Color((float) value.getRed(),
+				(float) value.getGreen(),
+				(float) value.getBlue(),
+				(float) value.getOpacity());
+		return c;
+	}*/
+	
+	public void save() {
+		Main.saved = true;
+		System.out.println("This is itemList: " + ItemHelper.getItemList());
+		flushDB();
+		ItemHelper.writeDB(ItemHelper.getItemList());
+		listView.refresh();
 	}
 }
