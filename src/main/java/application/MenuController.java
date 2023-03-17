@@ -135,6 +135,7 @@ public class MenuController implements Initializable {
 	
 	public void addNewItem(MagicItem item) {
 		ItemHelper.addItem(item);
+		flushDB();
 		ItemHelper.writeDB(ItemHelper.getItemList());
 		listView.getItems().add(item);
 	}
@@ -200,6 +201,7 @@ public class MenuController implements Initializable {
 		}
 		
 		flushDB();
+		ItemHelper.writeDB(ItemHelper.getItemList());
 		listView.refresh();
 	}
 	
@@ -222,7 +224,6 @@ public class MenuController implements Initializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		ItemHelper.writeDB(ItemHelper.getItemList());
 	}
 	
 	public static Color colorPicker() {
