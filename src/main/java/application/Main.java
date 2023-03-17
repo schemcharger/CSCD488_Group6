@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	
 	protected static boolean opened = false;
+	public static boolean saved = true;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -42,14 +43,20 @@ public class Main extends Application {
 	}
 	
 	public void exitProgram(Stage stage) {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Exit");
-		alert.setHeaderText("You're about to close the program");
-		alert.setContentText("Are you sure you want to close before saving?");
 		
-		if(alert.showAndWait().get() == ButtonType.OK) {
+		if (saved) {
 			System.out.println("You successfully exited the program");
 			stage.close();
+		} else {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Exit");
+			alert.setHeaderText("You're about to close the program");
+			alert.setContentText("Are you sure you want to close before saving?");
+			
+			if(alert.showAndWait().get() == ButtonType.OK) {
+				System.out.println("You successfully exited the program");
+				stage.close();
+			}
 		}
 	}
 }

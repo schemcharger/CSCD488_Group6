@@ -16,7 +16,7 @@
             <Font size="40.0" />
          </font>
       </Label>
-      <Button layoutX="460.0" layoutY="697.0" mnemonicParsing="false" onAction="#switchToGridEditor" text="Edit Art">
+      <Button fx:id="editArtButton" layoutX="460.0" layoutY="697.0" mnemonicParsing="false" onAction="#switchToGridEditor" text="Edit Art">
          <font>
             <Font size="20.0" />
          </font>
@@ -54,7 +54,7 @@
             <Font size="20.0" />
          </font>
       </Button>
-      <Button layoutX="600.0" layoutY="697.0" mnemonicParsing="false" onAction="#exportToPDF" text="Export">
+      <Button fx:id="exportButton" layoutX="600.0" layoutY="697.0" mnemonicParsing="false" onAction="#exportToPDF" text="Export">
          <font>
             <Font size="20.0" />
          </font>
@@ -64,5 +64,10 @@
             <Font size="14.0" />
          </font>
       </TextField>
+      <Button fx:id="saveButton" layoutX="731.0" layoutY="697.0" mnemonicParsing="false" onAction="#save" text="Save">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
