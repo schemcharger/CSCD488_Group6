@@ -22,7 +22,7 @@ import magicitem.MagicItem;
 public class ItemHelper {
     static ObservableList<MagicItem> itemList; //a sorted list of magic items
     static ArrayList<String> traitList;
-    static int sortType; // what parameter to sort on. 0->date created, 1->name, 2->type
+    static int sortType = 1; // what parameter to sort on. 0->date created, 1->name, 2->type
 
     /*public ItemHelper() {
         this.sortType = 0;
@@ -58,6 +58,10 @@ public class ItemHelper {
             throw new IllegalArgumentException("Unknown sort type");
         }
         sortType = type;
+    }
+
+    public static int getSortType() {
+        return sortType;
     }
 
     public static ObservableList<MagicItem> Sort(ObservableList<MagicItem> list){ //Add each MagicItem to a new sorted list  //move to menu controller

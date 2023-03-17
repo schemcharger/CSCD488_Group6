@@ -227,8 +227,14 @@ public class MenuController implements Initializable {
 			MagicItem item;
 			for(int i=0; i<masterList.size(); i++){
 				item = masterList.get(i);
-				if(item.getName().toLowerCase().contains(param.toLowerCase())){
-					searchList.add(item);
+				if(ItemHelper.getSortType()==1) {
+					if (item.getName().toLowerCase().contains(param.toLowerCase())) {
+						searchList.add(item);
+					}
+				}else if(ItemHelper.getSortType()==2){
+					if (item.getType().name().toLowerCase().contains(param.toLowerCase())) {
+						searchList.add(item);
+					}
 				}
 			}
 			listView.setItems(searchList);
