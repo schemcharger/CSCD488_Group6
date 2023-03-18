@@ -106,7 +106,6 @@ public class ItemHelper {
             file.createNewFile();
             PrintStream fout = new PrintStream(file);
             for(int i=0; i<list.size(); i++){
-                writeArt(list.get(i));
                 fout.println(list.get(i).toString());
             }
             fout.close();

@@ -44,6 +44,7 @@ public class PDFHelper {
 			System.out.println("Content stream error in renderPDF method of PDFHelper");
 			e.printStackTrace();
 		}
+		ItemHelper.writeArt(item);
 		if(new File(System.getProperty("user.home") + File.separator + "Documents" + File.separator + 
 				"Magic Item Creator" + File.separator + "Item Art", item.getName() + ".png").exists()) 
 			renderArt();
