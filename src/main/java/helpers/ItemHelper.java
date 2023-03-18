@@ -110,13 +110,34 @@ public class ItemHelper {
                 fout.println(list.get(i).toString());
             }
             fout.close();
-        }catch(Exception e){
-            if(backup.exists()){
-                backup.renameTo(file);
-            }
-            System.out.println(e);
+        }catch(IOException e){
+            if(backup.exists()) backup.renameTo(file);
+            e.printStackTrace();
         }
 
+    }
+    
+    public static void writeTraits(ArrayList<String> list) {
+    	File backup = new File("traits.bak");
+    	File main = new File("traits");
+    	if(main.exists()) {
+    		if(backup.exists()) {
+    			backup.delete();
+    		}
+    		main.renameTo(backup);
+    		main.delete();
+    	}
+    	try {
+    		main.createNewFile();
+    		PrintStream out = new PrintStream(main);
+    		for(int i = 0; i < list.size(); i++) {
+    			out.println(list.get(i));
+    		}
+    		out.close();
+    	} catch(IOException e) {
+    		if(backup.exists()) backup.renameTo(main);
+    		e.printStackTrace();
+    	}
     }
 
     public static boolean writeArt(MagicItem cur){
@@ -204,25 +225,44 @@ public class ItemHelper {
 
             }
             fin.close();
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+        	e.printStackTrace();
             try { //if there is a problem reading the database file, try reading the backup
                 File backup = new File("itemDb.bak");
                 Scanner fin = new Scanner(backup);
                 while(fin.hasNextLine()) {
-                    MagicItem item = parseItem(fin.nextLine());
-                    addItem(item);
-                    ArrayList<String> traits = item.getTraits();
-                    for(int i=0; i<traits.size(); i++){
-                        addTrait(traits.get(i));
-                    }
+                    addItem(parseItem(fin.nextLine()));
                 }
                 fin.close();
             } catch (FileNotFoundException f) {
-                e.printStackTrace();
                 f.printStackTrace();
             }
         }
         return itemList;
+    }
+    
+    public static ArrayList<String> readTraits() {
+    	try {
+    		File main = new File("traits");
+    		Scanner in = new Scanner(main);
+    		while(in.hasNextLine()) {
+    			addTrait(in.nextLine().trim());
+    		}
+    		in.close();
+    	} catch(FileNotFoundException e) {
+    		e.printStackTrace();
+    		try {
+    			File backup = new File("traits.bak");
+    			Scanner in = new Scanner(backup);
+    			while(in.hasNextLine()) {
+    				addTrait(in.nextLine().trim());
+    			}
+    			in.close();
+    		} catch (FileNotFoundException f) {
+    			f.printStackTrace();
+    		}
+    	}
+    	return traitList;
     }
 
     static MagicItem parseItem(String in){ //Parse a string in the format from MagicItem.toString
