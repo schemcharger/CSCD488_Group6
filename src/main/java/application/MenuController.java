@@ -1,11 +1,9 @@
 package application;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import helpers.ItemHelper;
@@ -26,14 +24,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -100,9 +96,7 @@ public class MenuController implements Initializable {
 			System.out.println("Init");
 		}
 		
-		exportButton.setDisable(true);
-		editArtButton.setDisable(true);
-		saveButton.setDisable(true);
+		this.disableButtons();
 		ObservableList<MagicItem> list;
 		if (NewItemController.exit) { // If we are coming from exit button in NewItemController, get original itemList
 			list = ItemHelper.getItemList();
@@ -124,14 +118,16 @@ public class MenuController implements Initializable {
 			@Override
 			public void changed(ObservableValue<? extends MagicItem> arg0, MagicItem arg1, MagicItem arg2) {
 				currentItem = listView.getSelectionModel().getSelectedItem();
-				exportButton.setDisable(false);
-				editArtButton.setDisable(false);
-				saveButton.setDisable(false);
+				if(currentItem != null) {
+					exportButton.setDisable(false);
+					editArtButton.setDisable(false);
+					saveButton.setDisable(false);
+				}
 				
-				descriptionBox.setText(currentItem.getDescription());
-				itemTypeLabel.setText(currentItem.getType().toString());
-				itemTypeChoiceBox.getSelectionModel().select(currentItem.getType());
-				selectedItem.setText(currentItem.getName());		
+				descriptionBox.setText(currentItem == null ? "" : currentItem.getDescription());
+				itemTypeLabel.setText(currentItem == null ? "" : currentItem.getType().toString());
+				itemTypeChoiceBox.getSelectionModel().select(currentItem == null ? ItemType.GENERIC : currentItem.getType());
+				selectedItem.setText(currentItem == null ? "" : currentItem.getName());		
 			}
 			
 		});
@@ -155,6 +151,12 @@ public class MenuController implements Initializable {
 		// Search Section
 		searchChoiceBox.getItems().addAll(searchFilter);
 		
+	}
+	
+	private void disableButtons() {
+		exportButton.setDisable(true);
+		editArtButton.setDisable(true);
+		saveButton.setDisable(true);
 	}
 	
 	static class MagicItemListCell extends ListCell<MagicItem> {
@@ -230,7 +232,9 @@ public class MenuController implements Initializable {
 			ItemHelper.SetSortType(sortType);
 		}
 		if(param==null || param.isEmpty()){
-			listView.setItems(ItemHelper.Sort(masterList));
+			this.disableButtons();
+			listView.getSelectionModel().select(null);
+			listView.setItems(masterList);
 		}else{
 			ObservableList<MagicItem> searchList = FXCollections.observableArrayList();
 			MagicItem item;
@@ -246,6 +250,8 @@ public class MenuController implements Initializable {
 					}
 				}
 			}
+			this.disableButtons();
+			listView.getSelectionModel().select(null);
 			listView.setItems(ItemHelper.Sort(searchList));
 		}
 
@@ -255,28 +261,30 @@ public class MenuController implements Initializable {
 	public void changeItemType(ActionEvent event) {
 		ItemType itemType = itemTypeChoiceBox.getValue();
 		currentItem = listView.getSelectionModel().getSelectedItem();
-		if(!currentItem.getType().equals(itemType)){
-			Main.saved = false;
+		if(currentItem != null) {
+			if(!currentItem.getType().equals(itemType)){
+				Main.saved = false;
+			}
+			if (itemType.equals(ItemType.ARMOUR)) {
+				currentItem.setType(ItemType.ARMOUR);
+			} else if (itemType.equals(ItemType.CATALYST)) {
+				currentItem.setType(ItemType.CATALYST);
+			} else if (itemType.equals(ItemType.GENERIC)) {
+				currentItem.setType(ItemType.GENERIC);
+			} else if (itemType.equals(ItemType.WEAPON)) {
+				currentItem.setType(ItemType.WEAPON);
+			}
+			listView.refresh();
 		}
-		if (itemType.equals(ItemType.ARMOUR)) {
-			currentItem.setType(ItemType.ARMOUR);
-		} else if (itemType.equals(ItemType.CATALYST)) {
-			currentItem.setType(ItemType.CATALYST);
-		} else if (itemType.equals(ItemType.GENERIC)) {
-			currentItem.setType(ItemType.GENERIC);
-		} else if (itemType.equals(ItemType.WEAPON)) {
-			currentItem.setType(ItemType.WEAPON);
-		}
-		
-		Main.saved = false;
-		listView.refresh();
 	}
 	
 	public void changeDescription(KeyEvent event) {
 		String description = descriptionBox.getText();
 		currentItem = listView.getSelectionModel().getSelectedItem();
-		currentItem.setDescription(description);
-		Main.saved = false;
+		if(currentItem != null) {
+			currentItem.setDescription(description);
+			Main.saved = false;
+		}
 	}
 	
 	private void flushDB() {
