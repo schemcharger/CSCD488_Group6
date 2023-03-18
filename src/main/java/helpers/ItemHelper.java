@@ -22,7 +22,7 @@ import magicitem.MagicItem;
 public class ItemHelper {
     static ObservableList<MagicItem> itemList; //a sorted list of magic items
     static ArrayList<String> traitList;
-    static int sortType = 1; // what parameter to sort on. 0->date created, 1->name, 2->type
+    static int sortType = 0; // what parameter to sort on. 0->name, 1->type
 
     /*public ItemHelper() {
         this.sortType = 0;
@@ -54,7 +54,7 @@ public class ItemHelper {
     }*/
 
     public static void SetSortType(int type){
-        if(type<0||type>2){ //check if the sort type is valid
+        if(type<0||type>1){ //check if the sort type is valid
             throw new IllegalArgumentException("Unknown sort type");
         }
         sortType = type;
@@ -66,11 +66,30 @@ public class ItemHelper {
 
     public static ObservableList<MagicItem> Sort(ObservableList<MagicItem> list){ //Add each MagicItem to a new sorted list  //move to menu controller
 
-        itemList = FXCollections.observableArrayList();
-        for(int i=0; i<list.size(); i++){
-            addItem(list.get(i));
+        ObservableList<MagicItem> newList = FXCollections.observableArrayList();
+        if(list==null||list.size()==0){
+            return newList;
         }
-        return itemList;
+        for(int i=0; i<list.size(); i++){
+            boolean set = false;
+            for(int j=0; j<newList.size()&&!set; j++){
+                if(sortType==0){
+                    if(list.get(i).getName().compareTo(newList.get(j).getName())<0){
+                        newList.add(j, list.get(i));
+                        set = true;
+                    }
+                }else{
+                    if(list.get(i).getType().compareTo(newList.get(j).getType())<0){
+                        newList.add(j, list.get(i));
+                        set = true;
+                    }
+                }
+            }
+            if(!set){
+                newList.add(list.get(i));
+            }
+        }
+        return newList;
     }
 
     public static void writeDB(ObservableList<MagicItem> list){
@@ -141,11 +160,6 @@ public class ItemHelper {
         try{
             for(int i=0; i<itemList.size(); i++){
                 if(sortType==0){
-                    if(item.getCreated().compareTo(itemList.get(i).getCreated())<0){
-                        itemList.add(i, item);
-                        return true;
-                    }
-                }else if(sortType==1){
                     if(item.getName().compareTo(itemList.get(i).getName())<0){
                         itemList.add(i, item);
                         return true;

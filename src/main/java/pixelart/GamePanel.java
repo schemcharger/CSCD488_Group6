@@ -4,16 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.io.IOException;
 
 import javax.swing.JPanel;
 
 import application.ColorPickerController;
-import application.MenuController;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import magicitem.MagicItem;
 
 public class GamePanel extends JPanel implements Runnable{
