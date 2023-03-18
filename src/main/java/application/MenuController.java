@@ -4,13 +4,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import org.controlsfx.control.CheckComboBox;
 
 import helpers.ItemHelper;
 import helpers.PDFHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,10 +52,13 @@ public class MenuController implements Initializable {
 	@FXML private TextArea descriptionBox;
 	@FXML private TextField searchBar;
 	@FXML private ChoiceBox<String> searchChoiceBox;
+	@FXML private CheckComboBox<String> traitsComboBox;
+	@FXML private TextField addTraitTextField;
+	@FXML private TextField deleteTraitTextField;
 	@FXML private Button exportButton;
 	@FXML private Button editArtButton;
-	@FXML private Button saveButton;
 	@FXML private ListView<MagicItem> listView = new ListView<MagicItem>(ItemHelper.getItemList());
+	@FXML private ObservableList<String> traitsList = FXCollections.observableArrayList();
 	MagicItem currentItem;
 	
 	// ItemType array to associate with ItemTypes
@@ -121,13 +128,21 @@ public class MenuController implements Initializable {
 				if(currentItem != null) {
 					exportButton.setDisable(false);
 					editArtButton.setDisable(false);
-					saveButton.setDisable(false);
 				}
 				
 				descriptionBox.setText(currentItem == null ? "" : currentItem.getDescription());
 				itemTypeLabel.setText(currentItem == null ? "" : currentItem.getType().toString());
 				itemTypeChoiceBox.getSelectionModel().select(currentItem == null ? ItemType.GENERIC : currentItem.getType());
-				selectedItem.setText(currentItem == null ? "" : currentItem.getName());		
+				selectedItem.setText(currentItem == null ? "" : currentItem.getName());
+				
+				// This checks and unchecks traits for currently selected items
+				if (currentItem != null) {
+					traitsComboBox.getCheckModel().clearChecks();
+					ArrayList<String> currentItemTraitList = currentItem.getTraits();
+					for (int i = 0; i < currentItemTraitList.size(); i++) {
+						traitsComboBox.getCheckModel().check(currentItemTraitList.get(i));
+					}
+				}
 			}
 			
 		});
@@ -151,12 +166,38 @@ public class MenuController implements Initializable {
 		// Search Section
 		searchChoiceBox.getItems().addAll(searchFilter);
 		
+		// Traits Section
+		ArrayList<String> traitArrayList = ItemHelper.readTraits();
+		for (int i = 0; i < traitArrayList.size(); i++) {
+			traitsList.add(traitArrayList.get(i));
+		}
+		traitsComboBox.getItems().addAll(traitsList);
+		traitsComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+
+			@Override
+			public void onChanged(Change<? extends String> c) {
+				if (currentItem == null) {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Magic Item Creator");
+					alert.setHeaderText("Oops!");
+					alert.setContentText("Please select an item before changing traits");
+					alert.show();
+				} else {
+					Main.saved = false;
+					ObservableList<String> list = traitsComboBox.getCheckModel().getCheckedItems();
+					ArrayList<String> traitArrayList = new ArrayList<String>();
+					for (int i = 0; i < list.size(); i++) {
+						traitArrayList.add(list.get(i));
+					}
+					currentItem.setTraits(traitArrayList);
+				}
+			}		
+		});
 	}
 	
 	private void disableButtons() {
 		exportButton.setDisable(true);
 		editArtButton.setDisable(true);
-		saveButton.setDisable(true);
 	}
 	
 	static class MagicItemListCell extends ListCell<MagicItem> {
@@ -174,8 +215,6 @@ public class MenuController implements Initializable {
 	
 	public void addNewItem(MagicItem item) {
 		ItemHelper.addItem(item);
-		/*flushDB();
-		ItemHelper.writeDB(ItemHelper.getItemList());*/
 		listView.getItems().add(item);
 		Main.saved = false;
 	}
@@ -287,6 +326,36 @@ public class MenuController implements Initializable {
 		}
 	}
 	
+	public void addTrait(ActionEvent event) {
+		String trait = addTraitTextField.getText();
+		if (trait == null || trait.isEmpty()) {
+			// Change this to an alert pop up
+			throw new NullPointerException("addTrait: trait is null");
+		}
+		ItemHelper.addTrait(trait);
+		traitsComboBox.getItems().add(trait);
+		Main.saved = false;
+	}
+	
+	public void deleteTrait(ActionEvent event) {
+		String trait = deleteTraitTextField.getText();
+		if (trait == null || trait.isEmpty()) {
+			// Change this to an alert pop up
+			throw new NullPointerException("deleteTrait: trait is null");
+		}
+		traitsComboBox.getItems().remove(trait);
+		traitsList.remove(trait);
+		ArrayList<String> traitArrayList = new ArrayList<String>();
+		for (int i = 0; i < traitsList.size(); i++) {
+			traitArrayList.add(traitsList.get(i));
+		}
+		
+		for (int i = 0; i < ItemHelper.getItemList().size(); i++) {
+			ItemHelper.getItemList().get(i).removeTrait(trait);
+		}
+		Main.saved = false;
+	}
+	
 	private void flushDB() {
 		File file = new File("itemDB");
 		FileWriter fw;
@@ -324,6 +393,7 @@ public class MenuController implements Initializable {
 		System.out.println("This is itemList: " + ItemHelper.getItemList());
 		flushDB();
 		ItemHelper.writeDB(ItemHelper.getItemList());
+		ItemHelper.writeTraits(ItemHelper.getTraitList());
 		listView.refresh();
 	}
 }

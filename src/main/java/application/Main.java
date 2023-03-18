@@ -23,12 +23,10 @@ public class Main extends Application {
 		try {
 			Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Menu.fxml"));
 			Scene scene = new Scene(root);
-			//scene.getStylesheets().add(getClass().getClassLoader().getResource("application.css").toExternalForm());
-			//String css = this.getClass().getClassLoader().getResource("application.css").toExternalForm();
-			//scene.getStylesheets().add(css);
-			stage.setWidth(1200);
-			stage.setHeight(800);
-			stage.setResizable(false);
+			scene.getStylesheets().add(getClass().getClassLoader().getResource("application.css").toExternalForm());
+			stage.setWidth(850);
+			stage.setHeight(850);
+			stage.setResizable(true);
 			stage.setScene(scene);
 			stage.show();
 			

@@ -1,12 +1,31 @@
 .root {
-	-fx-background-color: #111111;
+	-fx-background-color: #14181c;
 }
 
 .label {
-	-fx-font-size: 20;
-	-fx-font-family: "Lucida Console";
-	-fx-text-fill: "white";
+	-fx-font-family: "Roboto";
+	-fx-text-fill: #9ab;
 	-fx-alignment: center;
+}
+
+.list-view {
+	-fx-background-color: #14181c;
+}
+
+.list-cell {
+	-fx-text-fill: white;
+}
+
+.list-cell:even {
+	-fx-background-color: #2f3942;
+}
+
+.list-cell:odd {
+	-fx-background-color: #242b32;
+}
+
+.list-cell:filled:hover {
+	-fx-background-color: #0093ff;
 }
 
 #titleLabel {

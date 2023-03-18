@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.CheckComboBox?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MenuController">
    <children>
@@ -70,5 +71,8 @@
          </font>
       </Button>
       <ChoiceBox fx:id="searchChoiceBox" layoutX="237.0" layoutY="31.0" prefWidth="150.0" />
+      <CheckComboBox fx:id="traitsComboBox" layoutX="460.0" layoutY="484.0" />
+      <TextField fx:id="addTraitTextField" layoutX="657.0" layoutY="484.0" onAction="#addTrait" promptText="Add trait..." />
+      <TextField fx:id="deleteTraitTextField" layoutX="657.0" layoutY="523.0" onAction="#deleteTrait" promptText="Delete trait..." />
    </children>
 </AnchorPane>

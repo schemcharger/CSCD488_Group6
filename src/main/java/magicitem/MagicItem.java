@@ -95,6 +95,10 @@ public class MagicItem implements Comparable<MagicItem>{
         }
         this.traits.remove(trait);
     }
+    
+    public ArrayList<String> setTraits(ArrayList<String> list) {
+    	return this.traits = list;
+    }
 
     public Color[][] getArt() {
         return this.art;

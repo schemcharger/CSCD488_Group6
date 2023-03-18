@@ -21,7 +21,7 @@ import magicitem.MagicItem;
 
 public class ItemHelper {
     static ObservableList<MagicItem> itemList; //a sorted list of magic items
-    static ArrayList<String> traitList;
+    static ArrayList<String> traitList = new ArrayList<String>();
     static int sortType = 0; // what parameter to sort on. 0->name, 1->type
 
     /*public ItemHelper() {
@@ -309,6 +309,21 @@ public class ItemHelper {
     		//throw new NullPointerException("ObservableList in ItemHelper is null");
     	}
     	return itemList;
+    }
+    
+    public static ArrayList<String> getTraitList() {
+    	if (traitList == null) {
+    		traitList = new ArrayList<String>();
+    		//throw new NullPointerException("traitList in ItemHelper is null");
+    	}
+    	return traitList;
+    }
+    
+    public static String getTrait(int index) {
+    	if (traitList == null) {
+    		throw new NullPointerException("traitList in getTrait(int) is null");
+    	}
+    	return traitList.get(index);
     }
     
 }
