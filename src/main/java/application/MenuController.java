@@ -48,7 +48,7 @@ public class MenuController implements Initializable {
 	@FXML private Label yourItemsLabel;
 	@FXML private Label selectedItem;
 	@FXML private ChoiceBox<ItemType> itemTypeChoiceBox;
-	@FXML private Label itemTypeLabel;
+	//@FXML private Label itemTypeLabel;
 	@FXML private TextArea descriptionBox;
 	@FXML private TextField searchBar;
 	@FXML private ChoiceBox<String> searchChoiceBox;
@@ -70,6 +70,7 @@ public class MenuController implements Initializable {
 	private Parent root;
 	
 	public void switchToGridEditor(ActionEvent event) {
+		GameWindow.openEditor(currentItem);
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader();
 			fxmlLoader.setLocation((getClass().getResource("/ColorPicker.fxml")));
@@ -84,13 +85,13 @@ public class MenuController implements Initializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		GameWindow.openEditor(currentItem);
 	}
 	
 	public void switchToNewItemEditor(ActionEvent event) throws IOException {
 		root = FXMLLoader.load(getClass().getClassLoader().getResource("NewItemEditor.fxml"));
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getClassLoader().getResource("application.css").toExternalForm());
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -129,7 +130,6 @@ public class MenuController implements Initializable {
 				}
 				
 				descriptionBox.setText(currentItem == null ? "" : currentItem.getDescription());
-				itemTypeLabel.setText(currentItem == null ? "" : currentItem.getType().toString());
 				itemTypeChoiceBox.getSelectionModel().select(currentItem == null ? ItemType.GENERIC : currentItem.getType());
 				selectedItem.setText(currentItem == null ? "" : currentItem.getName());
 				
@@ -147,15 +147,15 @@ public class MenuController implements Initializable {
 		
 		// Item Type Section
 		itemTypeChoiceBox.getItems().addAll(itemTypes);
-		itemTypeChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+		/*itemTypeChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				itemTypeLabel.setText(itemTypes[arg2.intValue()].toString());
+				//itemTypeLabel.setText(itemTypes[arg2.intValue()].toString());
 				
 			}
 			
-		});
+		});*/
 		itemTypeChoiceBox.setOnAction(this::changeItemType);
 		
 		// Description Section

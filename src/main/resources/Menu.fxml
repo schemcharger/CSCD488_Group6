@@ -12,67 +12,67 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MenuController">
    <children>
-      <Label fx:id="selectedItem" layoutX="586.0" layoutY="59.0">
-         <font>
-            <Font size="40.0" />
-         </font>
-      </Label>
-      <Button fx:id="editArtButton" layoutX="460.0" layoutY="697.0" mnemonicParsing="false" onAction="#switchToGridEditor" text="Edit Art">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Button>
-      <ListView fx:id="listView" layoutY="131.0" prefHeight="539.0" prefWidth="390.0" />
-      <Label fx:id="yourItemsLabel" layoutX="159.0" layoutY="66.0" text="Items">
+      <Label fx:id="selectedItem" layoutX="556.0" layoutY="159.0">
          <font>
             <Font size="30.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="itemTypeChoiceBox" layoutX="460.0" layoutY="182.0" prefHeight="25.0" prefWidth="240.0" />
-      <Label fx:id="itemTypeLabel" layoutX="580.0" layoutY="146.0">
+      <Button fx:id="editArtButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchToGridEditor" text="Edit Art">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <ListView fx:id="listView" layoutX="14.0" layoutY="156.0" prefHeight="539.0" prefWidth="390.0" />
+      <Label fx:id="yourItemsLabel" layoutX="173.0" layoutY="114.0" text="Items">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+      <ChoiceBox fx:id="itemTypeChoiceBox" layoutX="456.0" layoutY="258.0" prefHeight="25.0" prefWidth="200.0" />
+      <TextArea fx:id="descriptionBox" layoutX="456.0" layoutY="318.0" onKeyTyped="#changeDescription" prefHeight="200.0" prefWidth="200.0" promptText="Description" wrapText="true" />
+      <Label layoutX="456.0" layoutY="159.0" text="Name:">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+      <Label layoutX="456.0" layoutY="222.0" text="Item Type:">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
-      <TextArea fx:id="descriptionBox" layoutX="460.0" layoutY="252.0" onKeyTyped="#changeDescription" prefHeight="200.0" prefWidth="200.0" promptText="Description" wrapText="true" />
-      <Label fx:id="itemIdentifierText" layoutX="460.0" layoutY="59.0" text="Name:">
+      <Button layoutX="78.0" layoutY="711.0" mnemonicParsing="false" onAction="#switchToNewItemEditor" text="New Item">
          <font>
-            <Font size="40.0" />
-         </font>
-      </Label>
-      <Label fx:id="itemTypeIdentifierText" layoutX="460.0" layoutY="146.0" text="Item Type:">
-         <font>
-            <Font size="25.0" />
-         </font>
-      </Label>
-      <Button layoutX="278.0" layoutY="697.0" mnemonicParsing="false" onAction="#switchToNewItemEditor" text="New Item">
-         <font>
-            <Font size="20.0" />
+            <Font size="14.0" />
          </font>
       </Button>
-      <Button layoutX="153.0" layoutY="697.0" mnemonicParsing="false" onAction="#deleteItem" text="Delete">
+      <Button layoutX="14.0" layoutY="711.0" mnemonicParsing="false" onAction="#deleteItem" text="Delete">
          <font>
-            <Font size="20.0" />
+            <Font size="14.0" />
          </font>
       </Button>
-      <Button fx:id="exportButton" layoutX="600.0" layoutY="697.0" mnemonicParsing="false" onAction="#exportToPDF" text="Export">
+      <Button fx:id="exportButton" layoutX="85.0" layoutY="14.0" mnemonicParsing="false" onAction="#exportToPDF" text="Export">
          <font>
-            <Font size="20.0" />
+            <Font size="14.0" />
          </font>
       </Button>
-      <TextField fx:id="searchBar" layoutX="14.0" layoutY="25.0" onAction="#search" prefHeight="36.0" prefWidth="200.0" promptText="Search...">
+      <TextField fx:id="searchBar" layoutX="14.0" layoutY="59.0" onAction="#search" prefHeight="36.0" prefWidth="200.0" promptText="Search...">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <Button fx:id="saveButton" layoutX="731.0" layoutY="697.0" mnemonicParsing="false" onAction="#save" text="Save">
+      <Button fx:id="saveButton" layoutX="150.0" layoutY="14.0" mnemonicParsing="false" onAction="#save" text="Save">
          <font>
-            <Font size="20.0" />
+            <Font size="14.0" />
          </font>
       </Button>
-      <ChoiceBox fx:id="searchChoiceBox" layoutX="237.0" layoutY="31.0" prefWidth="150.0" />
-      <CheckComboBox fx:id="traitsComboBox" layoutX="460.0" layoutY="484.0" />
-      <TextField fx:id="addTraitTextField" layoutX="657.0" layoutY="484.0" onAction="#addTrait" promptText="Add trait..." />
-      <TextField fx:id="deleteTraitTextField" layoutX="657.0" layoutY="523.0" onAction="#deleteTrait" promptText="Delete trait..." />
+      <ChoiceBox fx:id="searchChoiceBox" layoutX="234.0" layoutY="65.0" prefWidth="150.0" />
+      <CheckComboBox fx:id="traitsComboBox" layoutX="456.0" layoutY="563.0" prefHeight="25.0" prefWidth="200.0" />
+      <TextField fx:id="addTraitTextField" layoutX="456.0" layoutY="608.0" onAction="#addTrait" promptText="Add trait..." />
+      <TextField fx:id="deleteTraitTextField" layoutX="456.0" layoutY="642.0" onAction="#deleteTrait" promptText="Delete trait..." />
+      <Label layoutX="456.0" layoutY="527.0" text="Traits:">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
