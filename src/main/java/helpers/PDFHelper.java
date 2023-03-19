@@ -112,26 +112,6 @@ public class PDFHelper {
 		}
 	}
 	
-//	private static void renderLore() {
-//		try {
-//			stream.beginText();
-//			stream.newLineAtOffset(50, height - 400);
-//			stream.setFont(headerFont, 20);
-//			stream.showText("Lore");
-//			stream.endText();
-//			
-//			stream.beginText();
-//			stream.newLineAtOffset(50, height - 430);
-//			stream.setLeading(20);
-//			stream.setFont(textBodyFont, 14);
-//			divideText(lore, page, stream, textBodyFont, 14);
-//			stream.endText();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-	
 	private static void renderTraits() {
 		try {
 			stream.beginText();
@@ -178,7 +158,6 @@ public class PDFHelper {
 			doc.addPage(page);
 			doc.save(new File(pdf, item.getName() + ".pdf"));
 			doc.close();
-			System.out.println("PDF created");
 			return true;
 		} catch (IOException e) {
 			System.out.println("I/O error in createPDF method of PDFHelper");

@@ -89,11 +89,12 @@ public class MagicItem implements Comparable<MagicItem>{
         this.traits.add(trait.toLowerCase());
     }
 
-    public void removeTrait(String trait){
+    public boolean removeTrait(String trait){
         if(trait==null||trait.isEmpty()){
             throw new IllegalArgumentException("Invalid Trait");
         }
-        this.traits.remove(trait);
+        if(this.traits.remove(trait)) return true;
+        else return false;
     }
     
     public ArrayList<String> setTraits(ArrayList<String> list) {

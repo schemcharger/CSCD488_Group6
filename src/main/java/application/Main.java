@@ -43,7 +43,6 @@ public class Main extends Application {
 	public void exitProgram(Stage stage) {
 		
 		if (saved) {
-			System.out.println("You successfully exited the program");
 			stage.close();
 		} else {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -52,7 +51,6 @@ public class Main extends Application {
 			alert.setContentText("Are you sure you want to close before saving?");
 			
 			if(alert.showAndWait().get() == ButtonType.OK) {
-				System.out.println("You successfully exited the program");
 				stage.close();
 			}
 		}
