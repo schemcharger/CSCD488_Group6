@@ -163,6 +163,7 @@ public class MenuController implements Initializable {
 		
 		// Search Section
 		searchChoiceBox.getItems().addAll(searchFilter);
+		searchChoiceBox.setValue("Name");
 		
 		// Traits Section
 		ItemHelper.readTraits();
