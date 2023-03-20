@@ -147,15 +147,6 @@ public class MenuController implements Initializable {
 		
 		// Item Type Section
 		itemTypeChoiceBox.getItems().addAll(itemTypes);
-		/*itemTypeChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				//itemTypeLabel.setText(itemTypes[arg2.intValue()].toString());
-				
-			}
-			
-		});*/
 		itemTypeChoiceBox.setOnAction(this::changeItemType);
 		
 		// Description Section
@@ -180,12 +171,12 @@ public class MenuController implements Initializable {
 					alert.show();
 				} else {
 					if(!currentItem.getTraits().containsAll(traitsComboBox.getCheckModel().getCheckedItems())) {
-						ObservableList<String> list = traitsComboBox.getCheckModel().getCheckedItems();
-						ArrayList<String> traitArrayList = new ArrayList<String>();
-						traitArrayList.addAll(list);
-						currentItem.setTraits(traitArrayList);
 						Main.saved = false;
 					}
+					ObservableList<String> list = traitsComboBox.getCheckModel().getCheckedItems();
+					ArrayList<String> traitArrayList = new ArrayList<String>();
+					traitArrayList.addAll(list);
+					currentItem.setTraits(traitArrayList);
 					
 				}
 			}		
@@ -224,11 +215,11 @@ public class MenuController implements Initializable {
 		
 		if(alert.showAndWait().get() == ButtonType.OK) {
 			ObservableList<MagicItem> list = ItemHelper.getItemList();
-			int index = listView.getSelectionModel().getSelectedIndex();
-			list.remove(index);
+			MagicItem current = listView.getSelectionModel().getSelectedItem();
+			list.remove(current);
 			flushDB();
 			ItemHelper.writeDB(list);
-			listView.getItems().remove(index);
+			listView.getItems().remove(current);
 		}
 		Main.saved = false;
 	}

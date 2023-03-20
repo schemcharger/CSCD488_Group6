@@ -20,7 +20,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 	// fields
     //private BufferedImage img;
-
+	private boolean exit;
 
     //Tile Screen Settings
     final int MasterTileSize = 16; // this is the main tile size of 16 pixels
@@ -54,6 +54,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void startGameThread(){
         gameThread = new Thread(this);
+        exit = false;
         gameThread.start();
     }
 
@@ -66,7 +67,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 
 
-        while (gameThread != null){
+        while (!exit){
             //System.out.println("Game is Running");
 
             //1 UPDATE
@@ -133,6 +134,10 @@ public class GamePanel extends JPanel implements Runnable{
     }
     public void update(){
         pixelCursor.update();
+    }
+    
+    public void stop() {
+    	exit = true;
     }
 
     public void paintComponent(Graphics g){
