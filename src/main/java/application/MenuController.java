@@ -4,13 +4,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import org.controlsfx.control.CheckComboBox;
 
 import helpers.ItemHelper;
 import helpers.PDFHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,13 +48,15 @@ public class MenuController implements Initializable {
 	@FXML private Label yourItemsLabel;
 	@FXML private Label selectedItem;
 	@FXML private ChoiceBox<ItemType> itemTypeChoiceBox;
-	@FXML private Label itemTypeLabel;
+	//@FXML private Label itemTypeLabel;
 	@FXML private TextArea descriptionBox;
 	@FXML private TextField searchBar;
 	@FXML private ChoiceBox<String> searchChoiceBox;
+	@FXML private CheckComboBox<String> traitsComboBox;
+	@FXML private TextField addTraitTextField;
+	@FXML private TextField deleteTraitTextField;
 	@FXML private Button exportButton;
 	@FXML private Button editArtButton;
-	@FXML private Button saveButton;
 	@FXML private ListView<MagicItem> listView = new ListView<MagicItem>(ItemHelper.getItemList());
 	MagicItem currentItem;
 	
@@ -64,6 +70,7 @@ public class MenuController implements Initializable {
 	private Parent root;
 	
 	public void switchToGridEditor(ActionEvent event) {
+		GameWindow.openEditor(currentItem);
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader();
 			fxmlLoader.setLocation((getClass().getResource("/ColorPicker.fxml")));
@@ -78,13 +85,13 @@ public class MenuController implements Initializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		GameWindow.openEditor(currentItem);
 	}
 	
 	public void switchToNewItemEditor(ActionEvent event) throws IOException {
 		root = FXMLLoader.load(getClass().getClassLoader().getResource("NewItemEditor.fxml"));
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getClassLoader().getResource("application.css").toExternalForm());
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -93,7 +100,6 @@ public class MenuController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		if (Main.opened && !NewItemController.exit && !GamePanel.gamePanelSave) {
 			flushDB();
-			System.out.println("Init");
 		}
 		
 		this.disableButtons();
@@ -121,28 +127,26 @@ public class MenuController implements Initializable {
 				if(currentItem != null) {
 					exportButton.setDisable(false);
 					editArtButton.setDisable(false);
-					saveButton.setDisable(false);
 				}
 				
 				descriptionBox.setText(currentItem == null ? "" : currentItem.getDescription());
-				itemTypeLabel.setText(currentItem == null ? "" : currentItem.getType().toString());
 				itemTypeChoiceBox.getSelectionModel().select(currentItem == null ? ItemType.GENERIC : currentItem.getType());
-				selectedItem.setText(currentItem == null ? "" : currentItem.getName());		
+				selectedItem.setText(currentItem == null ? "" : currentItem.getName());
+				
+				// This checks and unchecks traits for currently selected items
+				if (currentItem != null) {
+					ArrayList<String> currentItemTraitList = currentItem.getTraits();
+					traitsComboBox.getCheckModel().clearChecks();
+					for (int i = 0; i < currentItemTraitList.size(); i++) {
+						traitsComboBox.getCheckModel().check(currentItemTraitList.get(i));
+					}
+				}
 			}
 			
 		});
 		
 		// Item Type Section
 		itemTypeChoiceBox.getItems().addAll(itemTypes);
-		itemTypeChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				itemTypeLabel.setText(itemTypes[arg2.intValue()].toString());
-				
-			}
-			
-		});
 		itemTypeChoiceBox.setOnAction(this::changeItemType);
 		
 		// Description Section
@@ -150,13 +154,38 @@ public class MenuController implements Initializable {
 		
 		// Search Section
 		searchChoiceBox.getItems().addAll(searchFilter);
+		searchChoiceBox.setValue("Name");
 		
+		// Traits Section
+		ItemHelper.readTraits();
+		traitsComboBox.getItems().addAll(ItemHelper.getTraitList());
+		traitsComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+
+			@Override
+			public void onChanged(Change<? extends String> c) {
+				if (currentItem == null) {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Magic Item Creator");
+					alert.setHeaderText("Oops!");
+					alert.setContentText("Please select an item before changing traits");
+					alert.show();
+				} else {
+					if(!currentItem.getTraits().containsAll(traitsComboBox.getCheckModel().getCheckedItems())) {
+						Main.saved = false;
+					}
+					ObservableList<String> list = traitsComboBox.getCheckModel().getCheckedItems();
+					ArrayList<String> traitArrayList = new ArrayList<String>();
+					traitArrayList.addAll(list);
+					currentItem.setTraits(traitArrayList);
+					
+				}
+			}		
+		});
 	}
 	
 	private void disableButtons() {
 		exportButton.setDisable(true);
 		editArtButton.setDisable(true);
-		saveButton.setDisable(true);
 	}
 	
 	static class MagicItemListCell extends ListCell<MagicItem> {
@@ -174,8 +203,6 @@ public class MenuController implements Initializable {
 	
 	public void addNewItem(MagicItem item) {
 		ItemHelper.addItem(item);
-		/*flushDB();
-		ItemHelper.writeDB(ItemHelper.getItemList());*/
 		listView.getItems().add(item);
 		Main.saved = false;
 	}
@@ -188,11 +215,11 @@ public class MenuController implements Initializable {
 		
 		if(alert.showAndWait().get() == ButtonType.OK) {
 			ObservableList<MagicItem> list = ItemHelper.getItemList();
-			int index = listView.getSelectionModel().getSelectedIndex();
-			list.remove(index);
+			MagicItem current = listView.getSelectionModel().getSelectedItem();
+			list.remove(current);
 			flushDB();
 			ItemHelper.writeDB(list);
-			listView.getItems().remove(index);
+			listView.getItems().remove(current);
 		}
 		Main.saved = false;
 	}
@@ -206,7 +233,6 @@ public class MenuController implements Initializable {
 			
 			if(alert.showAndWait().get() == ButtonType.OK) {
 				PDFHelper.renderPDF(currentItem);
-				System.out.println("Export complete");
 				
 				Alert confirm = new Alert(AlertType.INFORMATION);
 				confirm.setTitle("Success");
@@ -287,6 +313,36 @@ public class MenuController implements Initializable {
 		}
 	}
 	
+	public void addTrait(ActionEvent event) {
+		String trait = addTraitTextField.getText();
+		if (trait == null || trait.isEmpty()) {
+			// Change this to an alert pop up
+			throw new NullPointerException("addTrait: trait is null");
+		}
+		if(ItemHelper.addTrait(trait)) {
+			traitsComboBox.getItems().add(trait);
+			Main.saved = false;
+		}
+	}
+	
+	public void deleteTrait(ActionEvent event) {
+		String trait = deleteTraitTextField.getText();
+		if (trait == null || trait.isEmpty()) {
+			// Change this to an alert pop up
+			throw new NullPointerException("deleteTrait: trait is null");
+		}
+		ItemHelper.removeTrait(trait);
+		for (int i = 0; i < ItemHelper.getItemList().size(); i++) 
+			if(ItemHelper.getItemList().get(i).getTraits().contains(trait))
+				ItemHelper.getItemList().get(i).removeTrait(trait);
+		ArrayList<String> currentItemTraits = currentItem.getTraits();
+		traitsComboBox.getCheckModel().clearChecks();
+		traitsComboBox.getItems().remove(trait);
+		for(String s : currentItemTraits) traitsComboBox.getCheckModel().check(s);
+		
+		Main.saved = false;
+	}
+	
 	private void flushDB() {
 		File file = new File("itemDB");
 		FileWriter fw;
@@ -294,36 +350,16 @@ public class MenuController implements Initializable {
 			fw = new FileWriter(file, false);
 			fw.flush();
 			fw.close();
-			System.out.println("file cleared");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	/*public static Color colorPicker() {
-		Stage colorPicker = new Stage();
-		colorPicker.setTitle("Color Picker");
-		
-		ColorPicker picker = new ColorPicker();
-		
-		javafx.scene.paint.Color value = picker.getValue();
-		VBox box = new VBox(picker);
-		Scene s = new Scene(box, 960, 600);
-		
-		colorPicker.setScene(s);
-		colorPicker.show();
-		Color c = new Color((float) value.getRed(),
-				(float) value.getGreen(),
-				(float) value.getBlue(),
-				(float) value.getOpacity());
-		return c;
-	}*/
-	
 	public void save() {
 		Main.saved = true;
-		System.out.println("This is itemList: " + ItemHelper.getItemList());
 		flushDB();
 		ItemHelper.writeDB(ItemHelper.getItemList());
+		ItemHelper.writeTraits(ItemHelper.getTraitList());
 		listView.refresh();
 	}
 }

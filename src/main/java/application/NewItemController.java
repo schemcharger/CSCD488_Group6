@@ -73,6 +73,7 @@ public class NewItemController implements Initializable {
 		
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getClassLoader().getResource("application.css").toExternalForm());
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -82,6 +83,7 @@ public class NewItemController implements Initializable {
 		root = FXMLLoader.load(getClass().getClassLoader().getResource("Menu.fxml"));
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getClassLoader().getResource("application.css").toExternalForm());
 		stage.setScene(scene);
 		stage.show();
 	}
