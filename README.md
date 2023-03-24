@@ -15,6 +15,12 @@ Intellij IDEA
 
 Eclipse
 
+Command Line
+1.Install [Maven](https://maven.apache.org/install.html)
+2.Navigate to CSCD488_Group6/
+3.Execute "mvn compile"
+4.Execute "mvn javafx:run"
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first
