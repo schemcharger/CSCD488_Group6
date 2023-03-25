@@ -31,6 +31,7 @@ public class NewItemController implements Initializable {
 	@FXML private ChoiceBox<ItemType> itemTypeChoiceBox;
 	@FXML private Label descriptionIdentifierText;
 	@FXML private TextArea descriptionBox;
+	@FXML private ChoiceBox<Integer> gridSizeChoiceBox;
 	
 	protected static boolean exit = false;
 	private Stage stage;
@@ -39,11 +40,13 @@ public class NewItemController implements Initializable {
 	
 	// ItemType array to associate with ItemTypes
 	private ItemType[] itemTypes = {ItemType.ARMOUR, ItemType.CATALYST, ItemType.GENERIC, ItemType.WEAPON};
+	private Integer[] gridSizes = {8, 16, 32};
 	
 	String name = "";
 	ItemType type;
 	String description = "";
 	String lore = "";
+	int size = 8;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -53,6 +56,16 @@ public class NewItemController implements Initializable {
 			@Override
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				type = itemTypes[arg2.intValue()];
+			}
+			
+		});
+		
+		gridSizeChoiceBox.getItems().addAll(gridSizes);
+		gridSizeChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				size = gridSizes[newValue.intValue()];
 			}
 			
 		});
@@ -68,6 +81,7 @@ public class NewItemController implements Initializable {
 		root = loader.load();
 		MenuController menuController = loader.getController();
 		MagicItem item = new MagicItem(name, type, description);
+		item.setSize(size);
 		//item.addTrait("test trait");
 		menuController.addNewItem(item);
 		

@@ -42,5 +42,11 @@
          </font>
       </Label>
       <TextArea fx:id="descriptionBox" layoutX="249.0" layoutY="251.0" prefHeight="200.0" prefWidth="200.0" promptText="Write description here" />
+      <Label fx:id="sizeIdentifierText" layoutX="30.0" layoutY="491.0" text="Grid Size:">
+         <font>
+            <Font size="40.0" />
+         </font>
+      </Label>
+      <ChoiceBox fx:id="gridSizeChoiceBox" layoutX="249.0" layoutY="508.0" prefWidth="150.0" />
    </children>
 </AnchorPane>
